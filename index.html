@@ -1,0 +1,2900 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>Eletro Hauss - Gerador de Orçamentos</title>
+
+  <!-- Meta Tags PWA para Android, Chrome e iOS Safari -->
+  <meta name="application-name" content="Eletro Hauss" />
+  <meta name="apple-mobile-web-app-title" content="Eletro Hauss" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#8f9296" />
+  <meta name="description" content="Sistema rápido de orçamentos elétricos - Eletro Hauss Instalações Elétricas" />
+
+  <!-- Manifesto PWA e Ícones PNG Reais para Instalação Nativa no Android e iOS -->
+  <link rel="manifest" href="./manifest.json" />
+  <link id="dynamic-favicon" rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+  <link id="dynamic-apple-icon" rel="apple-touch-icon" sizes="192x192" href="./icon-192.png" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- html2pdf.js para gerar arquivo PDF direto no navegador e compartilhar no WhatsApp -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+
+  <!-- Google Fonts: Inter para interface limpa e legível -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            hauss: {
+              dark: '#374151',
+              steel: '#5a5a5a',
+              banner: '#8f9296',
+              gray: '#4b5563',
+              mid: '#6b7280',
+              bg: '#f4f4f9',
+              amber: '#f59e0b',
+              amberDark: '#d97706',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Configurações base e suavização de toque mobile (Realme 12 5G: 360px–412px) */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #f4f4f9;
+      color: #1f2937;
+      padding-bottom: calc(10.5rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Evita zoom automático no Chrome Android e garante alvos de toque confortáveis (min 46px) */
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="date"],
+    input[type="number"],
+    input[type="search"],
+    textarea {
+      font-size: 16px !important;
+      min-height: 46px;
+    }
+
+    .touch-btn {
+      min-height: 46px;
+    }
+
+    /* Estilização do controle deslizante de tamanho da logo */
+    input[type="range"].hauss-range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      outline: none;
+    }
+
+    input[type="range"].hauss-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #374151;
+      border: 3px solid #f59e0b;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    input[type="range"].hauss-range::-moz-range-thumb {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #374151;
+      border: 3px solid #f59e0b;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Barra de rolagem discreta para chips horizontais */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Pré-visualização responsiva da Folha A4 (794px x 1123px) */
+    .a4-preview-container {
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 820px) {
+      .a4-preview-container {
+        justify-content: flex-start;
+      }
+    }
+
+    .a4-scale-wrapper {
+      width: 794px;
+      transform-origin: top left;
+      flex-shrink: 0;
+    }
+
+    .a4-sheet {
+      width: 794px;
+      min-height: 1123px;
+      background-color: #ffffff;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .safe-bottom-dock {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Configuração de impressão / exportação para PDF em A4 */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+
+      html,
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 210mm !important;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      main {
+        max-width: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      #tab-preview {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .a4-preview-container {
+        height: auto !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        display: block !important;
+      }
+
+      .a4-scale-wrapper {
+        transform: none !important;
+        width: 100% !important;
+      }
+
+      .a4-sheet {
+        width: 100% !important;
+        min-height: 297mm !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Input oculto para selecionar imagem da Logo da galeria/arquivos -->
+  <input id="logo-file-input" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="hidden" />
+
+  <!-- =====================================================================
+       CABEÇALHO SUPERIOR DO APLICATIVO (OCULTO NA IMPRESSÃO)
+       ===================================================================== -->
+  <header
+    class="no-print sticky top-0 z-30 bg-[#8d9094] text-white shadow-md border-b-4 border-[#5a5a5a] overflow-hidden">
+    <!-- Linhas diagonais sutis à direita remetendo ao PDF original -->
+    <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-45" viewBox="0 0 400 80"
+      preserveAspectRatio="none" aria-hidden="true">
+      <g stroke="#ffffff" stroke-width="1.5">
+        <line x1="215" y1="85" x2="300" y2="-5" />
+        <line x1="230" y1="85" x2="315" y2="-5" />
+        <line x1="245" y1="85" x2="330" y2="-5" />
+        <line x1="260" y1="85" x2="345" y2="-5" />
+        <line x1="275" y1="85" x2="360" y2="-5" />
+        <line x1="290" y1="85" x2="375" y2="-5" />
+        <line x1="305" y1="85" x2="390" y2="-5" />
+      </g>
+    </svg>
+
+    <div class="relative z-10 max-w-3xl mx-auto px-3 sm:px-4 py-2 flex items-center justify-between gap-2">
+      <!-- Identidade Visual ELETRO HAUSS (Imagem enviada ou texto limpo sem desenho genérico) -->
+      <div class="flex items-center gap-2 min-w-0">
+        <img id="app-header-logo-img" src="" alt="Eletro Hauss"
+          class="hidden h-10 w-auto max-w-[165px] object-contain" />
+        <div id="app-header-logo-text" class="leading-tight min-w-0">
+          <span class="block font-black text-base tracking-wide text-white uppercase truncate drop-shadow-xs">ELETRO
+            HAUSS</span>
+          <span class="block text-[11px] font-semibold text-gray-100 truncate">Instalações Elétricas</span>
+        </div>
+      </div>
+
+      <!-- Botões de Ação Rápida no Topo -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button id="btn-new-blank" type="button" title="Limpar e começar novo orçamento"
+          class="touch-btn px-3 rounded-xl bg-[#2b2e33]/90 hover:bg-[#1f2937] active:scale-95 text-xs font-bold text-white border border-white/25 transition flex items-center gap-1">
+          <span>+ Novo</span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+
+
+  <!-- =====================================================================
+       CONTEÚDO PRINCIPAL DO APLICATIVO (4 ABAS)
+       ===================================================================== -->
+  <main class="max-w-3xl mx-auto px-3 sm:px-4 pt-3.5">
+
+    <!-- ===================================================================
+         ABA 1: ORÇAMENTO (DADOS DO CLIENTE + QUANTIDADES + ATALHOS + ITENS)
+         =================================================================== -->
+    <section id="tab-editor" class="no-print space-y-4">
+
+      <!-- CARTÃO 1: DADOS DO CLIENTE -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-extrabold uppercase tracking-wider text-gray-700 flex items-center gap-2">
+            <span
+              class="w-6 h-6 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center text-xs font-black">1</span>
+            Dados do Cliente
+          </h2>
+          <span id="draft-status"
+            class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">
+            ✓ Salvo automático
+          </span>
+        </div>
+
+        <div class="space-y-3">
+          <div>
+            <label for="input-cliente" class="block text-xs font-bold text-gray-600 mb-1">Cliente *</label>
+            <input id="input-cliente" type="text" placeholder="Nome do cliente ou empresa"
+              class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="input-cpfcnpj" class="block text-xs font-bold text-gray-600 mb-1">CPF / CNPJ</label>
+              <input id="input-cpfcnpj" type="text" inputmode="numeric" placeholder="000.000.000-00" maxlength="18"
+                class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+            </div>
+
+            <div>
+              <label for="input-data" class="block text-xs font-bold text-gray-600 mb-1">Data</label>
+              <input id="input-data" type="date"
+                class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="input-telefone" class="block text-xs font-bold text-gray-600 mb-1">Telefone / WhatsApp</label>
+              <input id="input-telefone" type="tel" inputmode="tel" placeholder="(48) 99999-9999" maxlength="15"
+                class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+            </div>
+
+            <div>
+              <label for="input-email" class="block text-xs font-bold text-gray-600 mb-1">E-mail</label>
+              <input id="input-email" type="email" placeholder="cliente@email.com"
+                class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+            </div>
+          </div>
+
+          <div>
+            <label for="input-endereco" class="block text-xs font-bold text-gray-600 mb-1">Endereço</label>
+            <input id="input-endereco" type="text" placeholder="Rua, número, bairro, cidade"
+              class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+          </div>
+
+        </div>
+      </div>
+
+      <!-- CARTÃO 2: SERVIÇOS, CHAVE DE QUANTIDADES E ATALHOS DE 1 TOQUE -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-extrabold uppercase tracking-wider text-gray-700 flex items-center gap-2">
+            <span
+              class="w-6 h-6 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-black">2</span>
+            Serviços e Materiais
+          </h2>
+          <button type="button" onclick="switchTab('saved', 'catalog')"
+            class="touch-btn px-2 text-xs font-bold text-amber-700 hover:text-amber-800 underline">
+            Editar atalhos
+          </button>
+        </div>
+
+        <!-- CHAVE "TRABALHAR COM QUANTIDADES" -->
+        <label for="toggle-qtd"
+          class="mb-3.5 p-3 rounded-xl bg-amber-50/90 border border-amber-200 flex items-center justify-between gap-3 cursor-pointer min-h-[52px]">
+          <div>
+            <span class="block text-xs sm:text-sm font-extrabold text-amber-900">Trabalhar com Quantidades</span>
+            <span id="toggle-qtd-hint" class="block text-[11px] text-amber-800/80">
+              Ativado: exibe Qtd, Valor Unit. e Subtotal
+            </span>
+          </div>
+          <input id="toggle-qtd" type="checkbox" checked
+            class="w-6 h-6 rounded-lg accent-amber-600 cursor-pointer shrink-0" />
+        </label>
+
+        <!-- Chips Horizontais de Adição em 1 Toque -->
+        <p class="text-xs font-semibold text-gray-500 mb-2">Atalhos rápidos (toque para adicionar):</p>
+        <div id="quick-chips-container" class="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-3">
+          <!-- Preenchido dinamicamente pelo JS -->
+        </div>
+
+        <!-- Formulário para Adicionar Item Personalizado -->
+        <div class="bg-gray-50 rounded-2xl p-3.5 border border-gray-200/90 space-y-3">
+          <div>
+            <label for="item-desc" class="block text-xs font-bold text-gray-600 mb-1">Descrição do Serviço ou
+              Material</label>
+            <input id="item-desc" type="text" placeholder="Ex: Mão de obra elétrica / Instalação"
+              class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+          </div>
+
+          <div id="item-inputs-grid" class="grid grid-cols-2 gap-3">
+            <!-- Controle de Quantidade -->
+            <div id="form-qty-wrapper">
+              <label for="item-qty" class="block text-xs font-bold text-gray-600 mb-1">Quantidade</label>
+              <div class="flex items-center rounded-xl border border-gray-300 bg-white overflow-hidden">
+                <button id="btn-qty-minus" type="button"
+                  class="w-11 h-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-800 font-extrabold text-xl transition shrink-0"
+                  aria-label="Diminuir quantidade">
+                  −
+                </button>
+                <input id="item-qty" type="number" inputmode="decimal" step="any" min="0.01" value="1"
+                  class="w-full text-center font-bold text-gray-900 focus:outline-none bg-white" />
+                <button id="btn-qty-plus" type="button"
+                  class="w-11 h-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-800 font-extrabold text-xl transition shrink-0"
+                  aria-label="Aumentar quantidade">
+                  +
+                </button>
+              </div>
+            </div>
+
+            <!-- Valor Unitário / Valor Fechado -->
+            <div id="form-price-wrapper">
+              <label id="item-price-label" for="item-price" class="block text-xs font-bold text-gray-600 mb-1">Valor
+                Unitário (R$)</label>
+              <div class="relative">
+                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">R$</span>
+                <input id="item-price" type="text" inputmode="decimal" value="0,00"
+                  class="w-full h-12 rounded-xl border border-gray-300 bg-white pl-10 pr-3.5 text-right font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+              </div>
+            </div>
+          </div>
+
+          <label class="flex items-center gap-2.5 text-xs text-gray-600 cursor-pointer min-h-[36px]">
+            <input id="item-save-catalog" type="checkbox"
+              class="w-5 h-5 rounded text-amber-500 focus:ring-amber-500 border-gray-300" />
+            <span>Salvar este item nos meus atalhos rápidos</span>
+          </label>
+
+          <button id="btn-add-item" type="button"
+            class="touch-btn w-full py-3 px-4 rounded-xl bg-hauss-amber hover:bg-hauss-amberDark active:scale-[0.99] text-gray-900 font-extrabold text-sm sm:text-base shadow-sm transition flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <span id="btn-add-item-text">Adicionar ao Orçamento</span>
+          </button>
+        </div>
+
+        <!-- Lista de Itens em Cartões Mobile-Friendly -->
+        <div class="mt-4">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-gray-500">
+              Itens no Orçamento (<span id="items-count">0</span>)
+            </h3>
+            <button id="btn-clear-items" type="button"
+              class="hidden touch-btn px-2 text-xs font-bold text-red-600 hover:text-red-700">
+              Limpar itens
+            </button>
+          </div>
+
+          <div id="items-list" class="space-y-2.5"></div>
+        </div>
+      </div>
+
+      <!-- CARTÃO 3: OBSERVAÇÕES / VALIDADE / FORMA DE PAGAMENTO -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
+        <label for="input-notes" class="block text-xs font-extrabold uppercase tracking-wider text-gray-700 mb-2">
+          Observações / Validade / Forma de Pagamento (Opcional)
+        </label>
+        <div class="flex flex-wrap gap-1.5 mb-2.5">
+          <button type="button" data-note="Validade: 10 dias | PIX ou Dinheiro."
+            class="note-chip touch-btn px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-semibold text-gray-700 transition">
+            + Validade 10 dias | PIX
+          </button>
+          <button type="button" data-note="Material por conta do cliente (somente mão de obra)."
+            class="note-chip touch-btn px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-semibold text-gray-700 transition">
+            + Só mão de obra
+          </button>
+          <button type="button" data-note="Material incluso conforme descrição acima."
+            class="note-chip touch-btn px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-semibold text-gray-700 transition">
+            + Material incluso
+          </button>
+        </div>
+        <textarea id="input-notes" rows="2"
+          placeholder="Ex: Validade: 10 dias | PIX ou Dinheiro. Garantia de serviço..."
+          class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition"></textarea>
+      </div>
+
+      <!-- CARTÃO 4: TOTAL GERAL EM DESTAQUE NA ABA ORÇAMENTO -->
+      <div class="bg-gray-900 text-white rounded-2xl p-4 shadow-md flex items-center justify-between gap-3">
+        <div>
+          <span class="block text-[11px] font-bold uppercase tracking-wider text-gray-400">Total Geral do
+            Orçamento</span>
+          <span id="editor-card-total" class="block text-2xl font-black text-hauss-amber mt-0.5">R$ 0,00</span>
+        </div>
+        <button type="button" onclick="switchTab('preview')"
+          class="touch-btn px-4 rounded-xl bg-white text-gray-900 font-extrabold text-xs sm:text-sm hover:bg-gray-100 active:scale-95 transition shrink-0">
+          Ver Folha PDF →
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ===================================================================
+         ABA 2: VER PDF / FOLHA A4 OFICIAL ELETRO HAUSS
+         =================================================================== -->
+    <section id="tab-preview" class="hidden space-y-4">
+
+      <!-- Barra de Controles do Documento (Oculta ao imprimir) -->
+      <div class="no-print bg-white rounded-2xl shadow-sm border border-gray-200 p-3.5 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-sm font-extrabold text-gray-800">Pré-visualização da Folha A4</h2>
+            <p class="text-xs text-gray-500">Salve em PDF para enviar o arquivo ou mande resumido no WhatsApp.</p>
+          </div>
+          <button type="button" onclick="switchTab('logo')"
+            class="touch-btn px-3 rounded-xl bg-amber-50 border border-amber-200 hover:bg-amber-100 text-xs font-extrabold text-amber-900 transition">
+            🖼️ Ajustar Logo
+          </button>
+        </div>
+
+        <!-- Interruptor "Ocultar campos em branco no PDF" -->
+        <label for="toggle-hide-empty"
+          class="p-2.5 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-between gap-2 cursor-pointer min-h-[46px]">
+          <span class="text-xs font-bold text-gray-700">Ocultar campos em branco no PDF (CPF, Endereço, E-mail
+            vazios)</span>
+          <input id="toggle-hide-empty" type="checkbox" checked
+            class="w-5 h-5 rounded accent-gray-700 cursor-pointer shrink-0" />
+        </label>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <button id="btn-preview-whatsapp" type="button"
+            class="touch-btn py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold text-sm shadow-sm transition flex items-center justify-center gap-2">
+            <svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z" />
+            </svg>
+            <span id="btn-preview-whatsapp-text">Compartilhar PDF no WhatsApp</span>
+          </button>
+
+          <button id="btn-print-pdf" type="button"
+            class="touch-btn py-3 px-4 rounded-xl bg-hauss-dark hover:bg-gray-800 active:scale-[0.99] text-white font-extrabold text-sm shadow-sm transition flex items-center justify-center gap-2">
+            <svg class="w-5 h-5 text-hauss-amber shrink-0" fill="none" stroke="currentColor" stroke-width="2.2"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            <span>Salvar PDF / Imprimir</span>
+          </button>
+        </div>
+
+        <button id="btn-preview-whatsapp-text-only" type="button"
+          class="touch-btn w-full py-2 px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs transition flex items-center justify-center gap-1.5">
+          <span>💬 Enviar apenas resumo em texto no WhatsApp</span>
+        </button>
+      </div>
+
+      <!-- =================================================================
+           FOLHA A4 OFICIAL ELETRO HAUSS (CABEÇALHO E LOGO CONFIGURÁVEIS)
+           ================================================================= -->
+      <div id="a4-preview-container" class="a4-preview-container pb-4">
+        <div id="a4-scale-wrapper" class="a4-scale-wrapper">
+          <div id="print-sheet" class="a4-sheet rounded-none sm:rounded-lg overflow-hidden border border-gray-300">
+
+            <!-- PARTE SUPERIOR DO DOCUMENTO -->
+            <div>
+              <!-- 1. FAIXA SUPERIOR CINZA (#8d9094) COM AS 13 LINHAS DIAGONAIS BRANCAS À DIREITA -->
+              <div class="relative w-full min-h-[144px] bg-[#8d9094] overflow-hidden flex items-center px-10 py-4">
+                <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 794 144"
+                  preserveAspectRatio="none" aria-hidden="true">
+                  <g stroke="#ffffff" stroke-opacity="0.72" stroke-width="1.8">
+                    <line x1="250" y1="146" x2="396" y2="-2" />
+                    <line x1="274" y1="146" x2="420" y2="-2" />
+                    <line x1="298" y1="146" x2="444" y2="-2" />
+                    <line x1="322" y1="146" x2="468" y2="-2" />
+                    <line x1="346" y1="146" x2="492" y2="-2" />
+                    <line x1="370" y1="146" x2="516" y2="-2" />
+                    <line x1="394" y1="146" x2="540" y2="-2" />
+                    <line x1="418" y1="146" x2="564" y2="-2" />
+                    <line x1="442" y1="146" x2="588" y2="-2" />
+                    <line x1="466" y1="146" x2="612" y2="-2" />
+                    <line x1="490" y1="146" x2="636" y2="-2" />
+                    <line x1="514" y1="146" x2="660" y2="-2" />
+                    <line x1="538" y1="146" x2="684" y2="-2" />
+                  </g>
+                </svg>
+
+                <!-- Logo posicionada SOBRE a faixa cinza (quando selecionado na aba Logo) -->
+                <img id="doc-logo-img-banner" src="" alt="Eletro Hauss" style="height: 80px;"
+                  class="hidden relative z-10 w-auto max-w-[380px] object-contain" />
+              </div>
+
+              <!-- 2. BLOCO DA LOGO (QUANDO ABAIXO DA FAIXA CINZA) + ORÇAMENTO + CONTATO -->
+              <div class="px-10 pt-5 pb-4 bg-white flex items-start justify-between gap-6 border-b border-gray-300">
+                <!-- Coluna Esquerda: Logo abaixo da faixa cinza OU texto limpo ELETRO HAUSS + ORÇAMENTO -->
+                <div>
+                  <img id="doc-logo-img-below" src="" alt="Eletro Hauss" style="height: 80px;"
+                    class="hidden w-auto max-w-[380px] object-contain mb-2" />
+
+                  <h1 id="doc-logo-fallback-text"
+                    class="text-[28px] font-black tracking-[0.04em] text-[#2b2e33] uppercase leading-none">
+                    ELETRO HAUSS
+                  </h1>
+
+                  <div class="mt-2.5 flex items-center gap-3">
+                    <span class="text-[19px] font-bold tracking-[0.14em] text-[#374151] uppercase">
+                      ORÇAMENTO
+                    </span>
+                    <span id="doc-number-display"
+                      class="text-xs font-bold px-2.5 py-0.5 rounded bg-gray-100 text-gray-600 border border-gray-300">
+                      Nº 001
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Coluna Direita: Instalações Elétricas + Telefone (48) 98852-1076 -->
+                <div class="text-right pt-1 shrink-0">
+                  <p class="text-[15px] font-semibold text-[#374151]">
+                    Instalações Elétricas
+                  </p>
+                  <p class="text-[15px] font-bold text-[#2b2e33] mt-0.5 tracking-wide">
+                    (48) 98852-1076
+                  </p>
+                </div>
+              </div>
+
+              <!-- 3. BLOCO DE DADOS DO CLIENTE (IGUAL AO PDF ORIGINAL) -->
+              <div class="px-10 py-4 bg-white border-b border-gray-300 text-[13px] text-gray-800">
+                <div class="grid grid-cols-12 gap-y-2 gap-x-6">
+                  <!-- Coluna Esquerda (7 cols) -->
+                  <div class="col-span-7 space-y-1.5">
+                    <div id="doc-row-cliente" class="flex gap-1.5">
+                      <span class="font-bold text-gray-800 shrink-0">Cliente:</span>
+                      <span id="doc-cliente" class="font-semibold text-gray-900 break-words">—</span>
+                    </div>
+                    <div id="doc-row-cpfcnpj" class="flex gap-1.5">
+                      <span class="font-bold text-gray-800 shrink-0">CPF/CNPJ:</span>
+                      <span id="doc-cpfcnpj" class="text-gray-800">—</span>
+                    </div>
+                    <div id="doc-row-endereco" class="flex gap-1.5">
+                      <span class="font-bold text-gray-800 shrink-0">Endereço:</span>
+                      <span id="doc-endereco" class="text-gray-800 break-words">—</span>
+                    </div>
+                    <div id="doc-row-telefone" class="flex gap-1.5">
+                      <span class="font-bold text-gray-800 shrink-0">Telefone:</span>
+                      <span id="doc-telefone" class="text-gray-800">—</span>
+                    </div>
+                  </div>
+
+                  <!-- Coluna Direita (5 cols) -->
+                  <div class="col-span-5 space-y-1.5">
+                    <div id="doc-row-data" class="flex gap-1.5">
+                      <span class="font-bold text-gray-800 shrink-0">Data:</span>
+                      <span id="doc-data" class="text-gray-900 font-semibold">—</span>
+                    </div>
+                    <div id="doc-row-email" class="flex gap-1.5">
+                      <span class="font-bold text-gray-800 shrink-0">E-mail:</span>
+                      <span id="doc-email" class="text-gray-800 break-all">—</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4. TABELA FORMAL DO ORÇAMENTO -->
+              <div class="px-10 py-5">
+                <table class="w-full border-collapse text-left">
+                  <thead>
+                    <tr class="bg-[#8d9094] text-white text-xs font-bold uppercase tracking-wider">
+                      <th class="py-2.5 px-3.5 border border-[#5a5a5a]">DESCRIÇÃO</th>
+                      <th id="doc-th-qty" class="py-2.5 px-3 border border-[#5a5a5a] text-center w-24">QTD</th>
+                      <th id="doc-th-unit" class="py-2.5 px-3 border border-[#5a5a5a] text-right w-32">VALOR UNIT.</th>
+                      <th id="doc-th-total" class="py-2.5 px-3.5 border border-[#5a5a5a] text-right w-36">TOTAL</th>
+                    </tr>
+                  </thead>
+                  <tbody id="doc-items-tbody"
+                    class="text-[13px] text-gray-800 divide-y divide-gray-300 border-b border-gray-300">
+                    <!-- Linhas preenchidas dinamicamente -->
+                  </tbody>
+                </table>
+
+                <!-- Bloco de Total Geral -->
+                <div class="mt-4 flex justify-end">
+                  <div
+                    class="w-72 bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 flex items-center justify-between">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-gray-700">TOTAL GERAL:</span>
+                    <span id="doc-total" class="text-lg font-extrabold text-gray-900">R$ 0,00</span>
+                  </div>
+                </div>
+
+                <!-- Observações no Documento (se preenchido) -->
+                <div id="doc-notes-box"
+                  class="hidden mt-5 p-3.5 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-700">
+                  <p class="font-bold uppercase text-gray-600 mb-1">Observações / Condições:</p>
+                  <p id="doc-notes-text" class="whitespace-pre-line leading-relaxed"></p>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         ABA 3: LOGO (ABA DEDICADA PARA IMAGEM DA LOGO + PRÉ-VISUALIZAÇÃO)
+         =================================================================== -->
+    <section id="tab-logo" class="no-print hidden space-y-4">
+
+      <!-- Cartão Principal de Upload -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 space-y-4">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <h2 class="text-base font-extrabold text-gray-900">Logo da Eletro Hauss</h2>
+            <p class="text-xs text-gray-500 mt-0.5">
+              Envie o arquivo original da logo (PNG transparente, JPG, WEBP ou SVG). Ela fica salva offline no aparelho.
+            </p>
+          </div>
+          <span id="logo-status-badge"
+            class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 shrink-0">
+            Sem imagem
+          </span>
+        </div>
+
+        <!-- Área Grande de Toque para Selecionar da Galeria -->
+        <button type="button" onclick="document.getElementById('logo-file-input').click()"
+          class="w-full min-h-[112px] p-4 rounded-2xl border-2 border-dashed border-amber-400 bg-amber-50/70 hover:bg-amber-100/70 active:scale-[0.99] transition flex flex-col items-center justify-center text-center gap-2">
+          <div class="w-12 h-12 rounded-2xl bg-hauss-dark text-hauss-amber flex items-center justify-center shadow-sm">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <span class="block text-sm font-extrabold text-gray-900">Selecionar Imagem da Logo / Galeria</span>
+            <span class="block text-xs text-gray-600 mt-0.5">Aceita PNG com fundo transparente, JPG, WEBP e SVG</span>
+          </div>
+        </button>
+
+        <!-- Controles de Ajuste em Tempo Real -->
+        <div class="space-y-4 pt-2 border-t border-gray-100">
+          <!-- 1. Controle Deslizante de Altura (40px a 160px) -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label for="logo-height-slider" class="text-xs font-extrabold uppercase tracking-wider text-gray-700">
+                Tamanho (Altura da Logo)
+              </label>
+              <span id="logo-height-value" class="text-xs font-black px-2.5 py-1 rounded-lg bg-gray-100 text-gray-800">
+                80 px
+              </span>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <button id="btn-logo-size-minus" type="button"
+                class="touch-btn w-12 rounded-xl bg-gray-100 hover:bg-gray-200 font-extrabold text-lg text-gray-800 shrink-0"
+                aria-label="Diminuir logo">
+                −
+              </button>
+              <input id="logo-height-slider" type="range" min="40" max="160" step="2" value="80" class="hauss-range" />
+              <button id="btn-logo-size-plus" type="button"
+                class="touch-btn w-12 rounded-xl bg-gray-100 hover:bg-gray-200 font-extrabold text-lg text-gray-800 shrink-0"
+                aria-label="Aumentar logo">
+                +
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. Posição no Cabeçalho do PDF -->
+          <div class="space-y-2">
+            <span class="block text-xs font-extrabold uppercase tracking-wider text-gray-700">
+              Posição no Cabeçalho do PDF
+            </span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button id="btn-pos-banner" type="button" class="touch-btn p-3 rounded-xl border-2 text-left transition">
+                <span class="block text-xs font-extrabold">Sobre a faixa cinza</span>
+                <span class="block text-[11px] opacity-80 mt-0.5">Ideal para PNG transparente ou branco</span>
+              </button>
+
+              <button id="btn-pos-below" type="button" class="touch-btn p-3 rounded-xl border-2 text-left transition">
+                <span class="block text-xs font-extrabold">Abaixo da faixa cinza</span>
+                <span class="block text-[11px] opacity-80 mt-0.5">Fundo branco, ideal para logo escura</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. Usar também como ícone do App na tela inicial -->
+          <label for="toggle-logo-pwa-icon"
+            class="p-3 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-between gap-3 cursor-pointer min-h-[52px]">
+            <div>
+              <span class="block text-xs sm:text-sm font-extrabold text-gray-800">Usar também como ícone do App na tela
+                inicial</span>
+              <span class="block text-[11px] text-gray-500">Atualiza o ícone exibido ao instalar o aplicativo no
+                celular</span>
+            </div>
+            <input id="toggle-logo-pwa-icon" type="checkbox" checked
+              class="w-6 h-6 rounded-lg accent-gray-800 cursor-pointer shrink-0" />
+          </label>
+        </div>
+
+        <!-- Pré-visualização ao Vivo do Cabeçalho do PDF -->
+        <div class="space-y-2 pt-2 border-t border-gray-100">
+          <span class="block text-xs font-extrabold uppercase tracking-wider text-gray-700">
+            Pré-visualização ao vivo do cabeçalho do PDF
+          </span>
+
+          <div class="rounded-2xl overflow-hidden border border-gray-300 shadow-xs bg-white">
+            <!-- Faixa cinza com linhas diagonais -->
+            <div class="relative w-full min-h-[96px] bg-[#8d9094] overflow-hidden flex items-center px-5 py-3">
+              <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 100"
+                preserveAspectRatio="none" aria-hidden="true">
+                <g stroke="#ffffff" stroke-opacity="0.72" stroke-width="1.4">
+                  <line x1="145" y1="102" x2="235" y2="-2" />
+                  <line x1="160" y1="102" x2="250" y2="-2" />
+                  <line x1="175" y1="102" x2="265" y2="-2" />
+                  <line x1="190" y1="102" x2="280" y2="-2" />
+                  <line x1="205" y1="102" x2="295" y2="-2" />
+                  <line x1="220" y1="102" x2="310" y2="-2" />
+                  <line x1="235" y1="102" x2="325" y2="-2" />
+                  <line x1="250" y1="102" x2="340" y2="-2" />
+                  <line x1="265" y1="102" x2="355" y2="-2" />
+                  <line x1="280" y1="102" x2="370" y2="-2" />
+                  <line x1="295" y1="102" x2="385" y2="-2" />
+                </g>
+              </svg>
+              <img id="live-logo-preview-banner" src="" alt="Prévia da logo na faixa cinza" style="height: 64px;"
+                class="hidden relative z-10 w-auto max-w-[230px] object-contain" />
+            </div>
+
+            <!-- Bloco inferior branco do cabeçalho -->
+            <div class="px-5 py-3.5 bg-white flex items-start justify-between gap-3">
+              <div>
+                <img id="live-logo-preview-below" src="" alt="Prévia da logo no fundo branco" style="height: 64px;"
+                  class="hidden w-auto max-w-[230px] object-contain mb-1.5" />
+                <p id="live-logo-preview-text" class="text-lg font-black text-[#2b2e33] uppercase leading-none">
+                  ELETRO HAUSS
+                </p>
+                <p class="text-xs font-bold tracking-[0.14em] text-[#374151] uppercase mt-1.5">
+                  ORÇAMENTO
+                </p>
+              </div>
+              <div class="text-right shrink-0">
+                <p class="text-xs font-semibold text-[#374151]">Instalações Elétricas</p>
+                <p class="text-xs font-bold text-[#2b2e33] mt-0.5">(48) 98852-1076</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botão Remover Logo -->
+        <button id="btn-remove-logo" type="button"
+          class="hidden touch-btn w-full py-3 px-4 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-extrabold text-sm transition flex items-center justify-center gap-2">
+          <span>🗑️ Remover Logo</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ===================================================================
+         ABA 4: SALVOS (HISTÓRICO + GERENCIADOR DE ATALHOS + BACKUP)
+         =================================================================== -->
+    <section id="tab-saved" class="no-print hidden space-y-4">
+
+      <!-- Sub-navegação entre Histórico e Atalhos/Backup -->
+      <div class="bg-white p-1.5 rounded-2xl shadow-sm border border-gray-200 grid grid-cols-2 gap-1.5">
+        <button id="subtab-history-btn" type="button"
+          class="touch-btn px-3 rounded-xl text-xs sm:text-sm font-bold bg-hauss-dark text-white transition">
+          Orçamentos (<span id="saved-count-badge">0</span>)
+        </button>
+        <button id="subtab-catalog-btn" type="button"
+          class="touch-btn px-3 rounded-xl text-xs sm:text-sm font-bold text-gray-600 hover:bg-gray-100 transition">
+          Atalhos & Backup (<span id="catalog-count-badge">0</span>)
+        </button>
+      </div>
+
+      <!-- PAINEL 1: HISTÓRICO DE ORÇAMENTOS SALVOS -->
+      <div id="panel-history" class="space-y-3">
+        <button id="btn-save-history-top" type="button"
+          class="touch-btn w-full py-3 px-4 rounded-2xl bg-hauss-amber hover:bg-hauss-amberDark text-gray-900 font-extrabold text-sm shadow-xs transition flex items-center justify-center gap-2">
+          <span>💾 Salvar Orçamento Atual no Histórico</span>
+        </button>
+
+        <div class="bg-white rounded-2xl p-3 border border-gray-200 shadow-sm">
+          <input id="search-saved" type="search" placeholder="Buscar orçamento por nome do cliente..."
+            class="w-full rounded-xl bg-gray-50 border border-gray-200 px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-hauss-amber" />
+        </div>
+
+        <div id="saved-quotes-list" class="space-y-2.5"></div>
+      </div>
+
+      <!-- PAINEL 2: GERENCIADOR DE ATALHOS RÁPIDOS + BACKUP -->
+      <div id="panel-catalog" class="hidden space-y-4">
+
+        <!-- Gerenciador de Atalhos Rápidos -->
+        <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3">
+          <div>
+            <h3 id="catalog-form-title" class="text-sm font-extrabold text-gray-800">Adicionar Novo Atalho Rápido</h3>
+            <p class="text-xs text-gray-500">Cadastre ou edite serviços e materiais frequentes para lançar com 1 toque.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <input id="cat-new-desc" type="text" placeholder="Nome do serviço/material"
+              class="sm:col-span-2 rounded-xl border border-gray-300 bg-gray-50 px-3.5 py-2.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-hauss-amber" />
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">R$</span>
+              <input id="cat-new-price" type="text" inputmode="decimal" value="0,00"
+                class="w-full rounded-xl border border-gray-300 bg-gray-50 pl-9 pr-3 py-2.5 text-right font-bold focus:bg-white focus:outline-none focus:ring-2 focus:ring-hauss-amber" />
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <button id="btn-add-catalog" type="button"
+              class="touch-btn flex-1 py-2.5 px-4 rounded-xl bg-hauss-amber hover:bg-hauss-amberDark text-gray-900 font-extrabold text-xs sm:text-sm transition">
+              + Salvar nos Atalhos Rápidos
+            </button>
+            <button id="btn-cancel-edit-catalog" type="button"
+              class="hidden touch-btn px-3.5 rounded-xl bg-gray-200 text-gray-700 font-bold text-xs">
+              Cancelar
+            </button>
+          </div>
+
+          <div id="catalog-list" class="space-y-2 pt-2 border-t border-gray-100"></div>
+        </div>
+
+        <!-- Backup & Restauração Simples -->
+        <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-2.5">
+          <div>
+            <h3 class="text-sm font-extrabold text-gray-800">Backup e Restauração</h3>
+            <p class="text-xs text-gray-500">Salve uma cópia dos seus orçamentos e atalhos ou restaure quando precisar.
+            </p>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button id="btn-export-backup" type="button"
+              class="touch-btn py-2.5 px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs transition">
+              ⬇️ Exportar Backup
+            </button>
+            <button type="button" onclick="document.getElementById('backup-file-input').click()"
+              class="touch-btn py-2.5 px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs transition">
+              ⬆️ Restaurar Backup
+            </button>
+            <input id="backup-file-input" type="file" accept=".json,application/json" class="hidden" />
+          </div>
+
+          <button id="btn-wipe-all-data" type="button"
+            class="touch-btn w-full py-2.5 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs transition">
+            🗑️ Limpar Histórico de Orçamentos Salvos
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       DOCK INFERIOR FIXO: BARRA DE AÇÃO RÁPIDA + 4 ABAS DE NAVEGAÇÃO
+       ===================================================================== -->
+  <footer
+    class="no-print fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-6px_24px_rgba(0,0,0,0.10)] safe-bottom-dock">
+    <div class="max-w-3xl mx-auto">
+      <!-- Barra de Ação Rápida Flutuante (Exibida nas telas Orçamento e Ver PDF) -->
+      <div id="quick-action-bar"
+        class="px-2.5 sm:px-4 py-2 flex items-center justify-between gap-1.5 border-b border-gray-100">
+        <div class="min-w-0 pr-1">
+          <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400">Total</span>
+          <span id="sticky-total" class="block text-sm sm:text-lg font-black text-gray-900 truncate">
+            R$ 0,00
+          </span>
+        </div>
+
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button id="btn-footer-save" type="button"
+            class="touch-btn px-2.5 sm:px-3 rounded-xl bg-gray-100 hover:bg-gray-200 active:scale-95 text-gray-800 font-extrabold text-xs transition flex items-center gap-1">
+            <span>💾</span>
+            <span>Salvar</span>
+          </button>
+
+          <button id="btn-footer-whatsapp" type="button"
+            class="touch-btn px-2.5 sm:px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold text-xs shadow-xs transition flex items-center gap-1">
+            <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z" />
+            </svg>
+            <span id="btn-footer-whatsapp-text">PDF no Zap</span>
+          </button>
+
+          <button id="btn-footer-pdf" type="button"
+            class="touch-btn px-2.5 sm:px-3.5 rounded-xl bg-hauss-dark hover:bg-gray-800 active:scale-95 text-white font-extrabold text-xs shadow-xs transition flex items-center gap-1">
+            <span>📄</span>
+            <span>Gerar PDF</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navegação Inferior Fixa com 4 Abas Dimensionadas para 360px -->
+      <nav class="px-1.5 py-1.5 grid grid-cols-4 gap-1 bg-gray-50">
+        <button type="button" data-tab="editor"
+          class="tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-extrabold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition bg-hauss-dark text-white shadow-xs">
+          <span class="text-sm leading-none">✏️</span>
+          <span class="truncate max-w-full">Orçamento</span>
+        </button>
+
+        <button type="button" data-tab="preview"
+          class="tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-bold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition text-gray-600 hover:bg-gray-200/70">
+          <span class="text-sm leading-none">📄</span>
+          <span class="truncate max-w-full">Ver PDF</span>
+        </button>
+
+        <button type="button" data-tab="logo"
+          class="tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-bold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition text-gray-600 hover:bg-gray-200/70">
+          <span class="text-sm leading-none">🖼️</span>
+          <span class="truncate max-w-full">Logo</span>
+        </button>
+
+        <button type="button" data-tab="saved"
+          class="tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-bold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition text-gray-600 hover:bg-gray-200/70">
+          <span class="text-sm leading-none">📁</span>
+          <span class="truncate max-w-full">Salvos</span>
+        </button>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- =====================================================================
+       MODAL DE INSTALAÇÃO PWA NO CELULAR (ANDROID & IPHONE)
+       ===================================================================== -->
+  <div id="install-modal"
+    class="no-print hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3">
+    <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl space-y-4 animate-[fadeIn_0.15s_ease-out]">
+      <div class="flex items-start justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-12 h-12 rounded-2xl bg-hauss-dark text-hauss-amber flex items-center justify-center shadow-md shrink-0">
+            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-base font-extrabold text-gray-900">Instalar Eletro Hauss</h3>
+            <p class="text-xs text-gray-500">Abra direto da tela inicial, sem barra de navegador</p>
+          </div>
+        </div>
+        <button id="btn-close-install-modal" type="button"
+          class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 font-bold">
+          ✕
+        </button>
+      </div>
+
+      <!-- Botão Nativo (Aparece automaticamente se o Chrome disparar beforeinstallprompt) -->
+      <div id="native-install-box"
+        class="hidden p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-center space-y-2">
+        <p class="text-xs font-semibold text-amber-900">Seu navegador permite instalação direta com 1 toque!</p>
+        <button id="btn-trigger-native-install" type="button"
+          class="w-full py-3 rounded-xl bg-hauss-amber hover:bg-hauss-amberDark text-gray-900 font-extrabold text-sm shadow-sm">
+          ⚡ Instalar Aplicativo Agora
+        </button>
+      </div>
+
+      <!-- Instruções Passo a Passo -->
+      <div class="space-y-3 text-xs text-gray-700">
+        <div class="p-3.5 rounded-2xl bg-gray-50 border border-gray-200 space-y-1.5">
+          <p class="font-extrabold text-gray-900 flex items-center gap-1.5">
+            <span>🤖</span> No Android (Google Chrome):
+          </p>
+          <ol class="list-decimal list-inside space-y-1 text-gray-600">
+            <li>Toque nos <strong>3 pontinhos (⋮)</strong> no canto superior direito do Chrome.</li>
+            <li>Toque em <strong>"Instalar aplicativo"</strong> ou <strong>"Adicionar à tela inicial"</strong>.</li>
+            <li>Confirme em <strong>Instalar</strong>. O ícone aparecerá junto aos seus apps!</li>
+          </ol>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-gray-50 border border-gray-200 space-y-1.5">
+          <p class="font-extrabold text-gray-900 flex items-center gap-1.5">
+            <span>🍎</span> No iPhone (Safari):
+          </p>
+          <ol class="list-decimal list-inside space-y-1 text-gray-600">
+            <li>Toque no ícone <strong>Compartilhar</strong> (quadrado com seta para cima) na barra inferior.</li>
+            <li>Role para baixo e toque em <strong>"Adicionar à Tela de Início"</strong>.</li>
+            <li>Toque em <strong>Adicionar</strong> no canto superior direito.</li>
+          </ol>
+        </div>
+
+        <p class="text-[11px] text-gray-500 bg-blue-50/70 border border-blue-100 rounded-xl p-2.5">
+          <strong>Dica:</strong> Para que o botão de instalação apareça no celular, abra este arquivo hospedado em um
+          link <strong>HTTPS</strong> (como Netlify Drop, Vercel ou GitHub Pages).
+        </p>
+      </div>
+
+      <button id="btn-ok-install-modal" type="button"
+        class="w-full py-3 rounded-xl bg-hauss-dark text-white font-bold text-sm">
+        Entendi
+      </button>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       MODAL DE CONFIRMAÇÃO PERSONALIZADO (SUBSTITUI confirm() NATIVO)
+       ===================================================================== -->
+  <div id="confirm-modal"
+    class="no-print hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl space-y-4">
+      <h3 id="confirm-title" class="text-base font-extrabold text-gray-900">Confirmar ação</h3>
+      <p id="confirm-message" class="text-sm text-gray-600">Tem certeza que deseja continuar?</p>
+      <div class="grid grid-cols-2 gap-2.5 pt-1">
+        <button id="btn-confirm-cancel" type="button"
+          class="py-2.5 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-sm">
+          Cancelar
+        </button>
+        <button id="btn-confirm-ok" type="button"
+          class="py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm">
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       MODAL DE COMPARTILHAMENTO DIRETO DO PDF GERADO
+       ===================================================================== -->
+  <div id="pdf-share-modal"
+    class="no-print hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl space-y-4">
+      <div class="flex items-start justify-between gap-2">
+        <div>
+          <h3 id="pdf-share-modal-title" class="text-base font-extrabold text-gray-900">PDF Pronto para Enviar!</h3>
+          <p id="pdf-share-modal-desc" class="text-xs text-gray-600 mt-1">
+            Toque no botão verde abaixo para abrir o compartilhamento do WhatsApp com o arquivo PDF anexado.
+          </p>
+        </div>
+        <button id="btn-close-pdf-share-modal" type="button"
+          class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 font-bold shrink-0">
+          ✕
+        </button>
+      </div>
+
+      <div class="space-y-2.5">
+        <button id="btn-modal-share-now" type="button"
+          class="touch-btn w-full py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm shadow-sm transition flex items-center justify-center gap-2">
+          <span>📲 Compartilhar PDF no WhatsApp</span>
+        </button>
+
+        <button id="btn-modal-download-pdf" type="button"
+          class="touch-btn w-full py-3 px-4 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs transition flex items-center justify-center gap-2">
+          <span>⬇️ Baixar Arquivo PDF no Aparelho</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       TOAST FLUTUANTE DE FEEDBACK (SUBSTITUI alert() NATIVO)
+       ===================================================================== -->
+  <div id="toast-container" class="no-print fixed top-20 inset-x-0 z-50 pointer-events-none flex justify-center px-4">
+    <div id="toast-box"
+      class="hidden bg-gray-900 text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 max-w-sm">
+      <span id="toast-icon">✅</span>
+      <span id="toast-text">Ação concluída</span>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       LÓGICA COMPLETA DO APLICATIVO E PWA
+       ===================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ===================================================================
+      // 1. CONFIGURAÇÃO DA LOGO (GALERIA + TAMANHO + POSIÇÃO + ÍCONE PWA)
+      // ===================================================================
+      const LOGO_SETTINGS_KEY = 'eletro_hauss_logo_settings_v2';
+      const LEGACY_LOGO_KEY = 'eletro_hauss_custom_logo_v1';
+
+      let logoSettings = {
+        dataUrl: '',
+        height: 80,
+        position: 'banner', // 'banner' (sobre a faixa cinza) ou 'below' (abaixo da faixa cinza)
+        useAsAppIcon: true
+      };
+
+      function loadLogoSettings() {
+        try {
+          const saved = localStorage.getItem(LOGO_SETTINGS_KEY);
+          if (saved) {
+            logoSettings = { ...logoSettings, ...JSON.parse(saved) };
+          } else {
+            const legacy = localStorage.getItem(LEGACY_LOGO_KEY);
+            if (legacy) {
+              logoSettings.dataUrl = legacy;
+              saveLogoSettings();
+            }
+          }
+        } catch (err) {
+          console.warn('Aviso ao ler configurações da logo:', err);
+        }
+      }
+
+      function saveLogoSettings() {
+        try {
+          localStorage.setItem(LOGO_SETTINGS_KEY, JSON.stringify(logoSettings));
+        } catch (err) {
+          showToast('Imagem muito grande para salvar offline. Tente uma menor.', '⚠️');
+        }
+      }
+
+      function getDefaultAppIconSvg() {
+        return './icon-192.png';
+      }
+
+      // Gera um ícone quadrado nítido para a tela inicial do celular a partir da logo enviada
+      function buildSquareAppIcon(dataUrl, callback) {
+        if (!dataUrl || !logoSettings.useAsAppIcon) {
+          callback(getDefaultAppIconSvg());
+          return;
+        }
+        const img = new Image();
+        img.onload = function () {
+          try {
+            const size = 512;
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            // Fundo cinza característico da Eletro Hauss caso a logo seja transparente
+            ctx.fillStyle = logoSettings.position === 'below' ? '#ffffff' : '#8d9094';
+            ctx.fillRect(0, 0, size, size);
+
+            const padding = 48;
+            const maxArea = size - padding * 2;
+            const ratio = Math.min(maxArea / img.width, maxArea / img.height);
+            const drawW = img.width * ratio;
+            const drawH = img.height * ratio;
+            const dx = (size - drawW) / 2;
+            const dy = (size - drawH) / 2;
+
+            ctx.drawImage(img, dx, dy, drawW, drawH);
+            callback(canvas.toDataURL('image/png'));
+          } catch (e) {
+            callback(dataUrl);
+          }
+        };
+        img.onerror = function () {
+          callback(getDefaultAppIconSvg());
+        };
+        img.src = dataUrl;
+      }
+
+      function applyLogoAcrossApp() {
+        const hasLogo = Boolean(logoSettings.dataUrl);
+        const h = Number(logoSettings.height) || 80;
+        const pos = logoSettings.position === 'below' ? 'below' : 'banner';
+
+        // 1. Cabeçalho superior do app
+        const appHeaderImg = document.getElementById('app-header-logo-img');
+        const appHeaderText = document.getElementById('app-header-logo-text');
+        if (hasLogo) {
+          appHeaderImg.src = logoSettings.dataUrl;
+          appHeaderImg.classList.remove('hidden');
+          appHeaderText.classList.add('hidden');
+        } else {
+          appHeaderImg.classList.add('hidden');
+          appHeaderText.classList.remove('hidden');
+        }
+
+        // 2. Folha A4 (Ver PDF)
+        const docBannerImg = document.getElementById('doc-logo-img-banner');
+        const docBelowImg = document.getElementById('doc-logo-img-below');
+        const docFallbackText = document.getElementById('doc-logo-fallback-text');
+
+        if (hasLogo && pos === 'banner') {
+          docBannerImg.src = logoSettings.dataUrl;
+          docBannerImg.style.height = `${h}px`;
+          docBannerImg.classList.remove('hidden');
+
+          docBelowImg.classList.add('hidden');
+          docFallbackText.classList.add('hidden');
+        } else if (hasLogo && pos === 'below') {
+          docBelowImg.src = logoSettings.dataUrl;
+          docBelowImg.style.height = `${h}px`;
+          docBelowImg.classList.remove('hidden');
+
+          docBannerImg.classList.add('hidden');
+          docFallbackText.classList.add('hidden');
+        } else {
+          docBannerImg.classList.add('hidden');
+          docBelowImg.classList.add('hidden');
+          docFallbackText.classList.remove('hidden');
+        }
+
+        // 3. Controles e Pré-visualização ao vivo na Aba Logo
+        const slider = document.getElementById('logo-height-slider');
+        const heightVal = document.getElementById('logo-height-value');
+        const btnBanner = document.getElementById('btn-pos-banner');
+        const btnBelow = document.getElementById('btn-pos-below');
+        const togglePwa = document.getElementById('toggle-logo-pwa-icon');
+        const statusBadge = document.getElementById('logo-status-badge');
+        const removeBtn = document.getElementById('btn-remove-logo');
+
+        const liveBannerImg = document.getElementById('live-logo-preview-banner');
+        const liveBelowImg = document.getElementById('live-logo-preview-below');
+        const liveFallbackText = document.getElementById('live-logo-preview-text');
+
+        slider.value = h;
+        heightVal.textContent = `${h} px`;
+        togglePwa.checked = Boolean(logoSettings.useAsAppIcon);
+
+        if (pos === 'banner') {
+          btnBanner.className = 'touch-btn p-3 rounded-xl border-2 border-hauss-dark bg-gray-900 text-white text-left transition';
+          btnBelow.className = 'touch-btn p-3 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-800 text-left transition';
+        } else {
+          btnBelow.className = 'touch-btn p-3 rounded-xl border-2 border-hauss-dark bg-gray-900 text-white text-left transition';
+          btnBanner.className = 'touch-btn p-3 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-800 text-left transition';
+        }
+
+        const scaledPreviewH = Math.max(32, Math.round(h * 0.72));
+        if (hasLogo && pos === 'banner') {
+          liveBannerImg.src = logoSettings.dataUrl;
+          liveBannerImg.style.height = `${scaledPreviewH}px`;
+          liveBannerImg.classList.remove('hidden');
+          liveBelowImg.classList.add('hidden');
+          liveFallbackText.classList.add('hidden');
+        } else if (hasLogo && pos === 'below') {
+          liveBelowImg.src = logoSettings.dataUrl;
+          liveBelowImg.style.height = `${scaledPreviewH}px`;
+          liveBelowImg.classList.remove('hidden');
+          liveBannerImg.classList.add('hidden');
+          liveFallbackText.classList.add('hidden');
+        } else {
+          liveBannerImg.classList.add('hidden');
+          liveBelowImg.classList.add('hidden');
+          liveFallbackText.classList.remove('hidden');
+        }
+
+        if (hasLogo) {
+          statusBadge.textContent = 'Logo Ativa';
+          statusBadge.className = 'text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 shrink-0';
+          removeBtn.classList.remove('hidden');
+        } else {
+          statusBadge.textContent = 'Sem imagem';
+          statusBadge.className = 'text-[11px] font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 shrink-0';
+          removeBtn.classList.add('hidden');
+        }
+
+        buildSquareAppIcon(logoSettings.dataUrl, (iconUrl) => {
+          setupPWA(iconUrl);
+        });
+        requestAnimationFrame(updateA4PreviewScale);
+      }
+
+      function handleLogoUpload(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const rawResult = event.target.result;
+          // Se for SVG, salva diretamente em Base64 mantendo nitidez vetorial infinita
+          if (file.type === 'image/svg+xml') {
+            logoSettings.dataUrl = rawResult;
+            saveLogoSettings();
+            applyLogoAcrossApp();
+            showToast('Logo SVG salva com sucesso!', '🖼️');
+            return;
+          }
+
+          const img = new Image();
+          img.onload = function () {
+            try {
+              const maxDim = 900;
+              let w = img.width;
+              let h = img.height;
+              if (w > maxDim || h > maxDim) {
+                if (w > h) {
+                  h = Math.round((h * maxDim) / w);
+                  w = maxDim;
+                } else {
+                  w = Math.round((w * maxDim) / h);
+                  h = maxDim;
+                }
+              }
+              const canvas = document.createElement('canvas');
+              canvas.width = w;
+              canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              ctx.clearRect(0, 0, w, h);
+              ctx.drawImage(img, 0, 0, w, h);
+
+              // Exporta sempre em PNG para preservar transparência (canal alfa)
+              logoSettings.dataUrl = canvas.toDataURL('image/png');
+              saveLogoSettings();
+              applyLogoAcrossApp();
+              showToast('Logo salva e aplicada no orçamento!', '🖼️');
+            } catch (err) {
+              showToast('Não foi possível processar esta imagem.', '⚠️');
+            }
+          };
+          img.src = rawResult;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function setupPWA(iconUrl) {
+        try {
+          const finalIcon = iconUrl || './icon-192.png';
+          const favEl = document.getElementById('dynamic-favicon');
+          favEl.setAttribute('type', 'image/png');
+          favEl.setAttribute('href', finalIcon);
+          document.getElementById('dynamic-apple-icon').setAttribute('href', finalIcon);
+
+          if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+            navigator.serviceWorker.register('./sw.js', { scope: './' }).catch((err) => {
+              console.warn('Aviso ao registrar Service Worker:', err);
+            });
+          }
+        } catch (err) {
+          console.warn('Aviso PWA:', err);
+        }
+      }
+
+      let deferredInstallPrompt = null;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        document.getElementById('pwa-smart-banner').classList.remove('hidden');
+        document.getElementById('native-install-box').classList.remove('hidden');
+      });
+
+      window.addEventListener('appinstalled', () => {
+        deferredInstallPrompt = null;
+        document.getElementById('pwa-smart-banner').classList.add('hidden');
+        document.getElementById('install-modal').classList.add('hidden');
+        showToast('Aplicativo Eletro Hauss instalado com sucesso!', '⚡');
+      });
+
+      // ===================================================================
+      // 2. ESTADO DO APLICATIVO E CHAVES DE ARMAZENAMENTO LOCAL
+      // ===================================================================
+      const STORAGE_KEYS = {
+        DRAFT: 'eletro_hauss_draft_v2',
+        SAVED: 'eletro_hauss_saved_quotes_v1',
+        CATALOG: 'eletro_hauss_catalog_v2',
+        COUNTER: 'eletro_hauss_quote_counter_v1'
+      };
+
+      const DEFAULT_CATALOG = [
+        { id: 'c1', desc: 'Mão de obra elétrica', price: 150.00 },
+        { id: 'c2', desc: 'Instalação de chuveiro 220V', price: 120.00 },
+        { id: 'c3', desc: 'Troca de disjuntor DIN', price: 65.00 },
+        { id: 'c4', desc: 'Ponto de tomada / interruptor', price: 85.00 },
+        { id: 'c5', desc: 'Instalação de luminária LED', price: 60.00 },
+        { id: 'c6', desc: 'Montagem de quadro de distribuição', price: 450.00 },
+        { id: 'c7', desc: 'Cabo flexível 2,5mm (metro)', price: 4.50 }
+      ];
+
+      function getTodayISO() {
+        const now = new Date();
+        const offset = now.getTimezoneOffset();
+        const local = new Date(now.getTime() - offset * 60 * 1000);
+        return local.toISOString().split('T')[0];
+      }
+
+      let state = {
+        quoteNumber: 1,
+        useQuantity: true,
+        hideEmptyFields: true,
+        client: {
+          name: '',
+          cpfCnpj: '',
+          phone: '',
+          email: '',
+          address: '',
+          date: getTodayISO()
+        },
+        items: [],
+        notes: '',
+        editingItemId: null
+      };
+
+      let catalog = [];
+      let savedQuotes = [];
+      let editingCatalogId = null;
+
+      // ===================================================================
+      // 3. UTILITÁRIOS DE FORMATAÇÃO E MÁSCARAS BRASILEIRAS
+      // ===================================================================
+      function formatCurrency(value) {
+        const num = Number(value) || 0;
+        return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      }
+
+      function formatNumberBR(value) {
+        const num = Number(value) || 0;
+        return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      function parseCurrencyInput(str) {
+        if (!str) return 0;
+        const digits = String(str).replace(/\D/g, '');
+        if (!digits) return 0;
+        return parseInt(digits, 10) / 100;
+      }
+
+      function applyCurrencyMask(inputEl) {
+        const digits = inputEl.value.replace(/\D/g, '');
+        const cents = digits ? parseInt(digits, 10) : 0;
+        inputEl.value = (cents / 100).toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function maskPhone(val) {
+        const d = val.replace(/\D/g, '').slice(0, 11);
+        if (d.length <= 2) return d.length ? `(${d}` : '';
+        if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+        if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+        return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+      }
+
+      function maskCpfCnpj(val) {
+        const d = val.replace(/\D/g, '').slice(0, 14);
+        if (d.length <= 11) {
+          return d
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        }
+        return d
+          .replace(/^(\d{2})(\d)/, '$1.$2')
+          .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+          .replace(/\.(\d{3})(\d)/, '.$1/$2')
+          .replace(/(\d{4})(\d)/, '$1-$2');
+      }
+
+      function formatDateBR(isoDate) {
+        if (!isoDate) return '—';
+        const parts = isoDate.split('-');
+        if (parts.length !== 3) return isoDate;
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      // ===================================================================
+      // 4. FEEDBACK VISUAL (TOAST E MODAL DE CONFIRMAÇÃO SEM ALERT/CONFIRM)
+      // ===================================================================
+      let toastTimer = null;
+      function showToast(message, icon = '✅') {
+        const box = document.getElementById('toast-box');
+        document.getElementById('toast-text').textContent = message;
+        document.getElementById('toast-icon').textContent = icon;
+        box.classList.remove('hidden');
+
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          box.classList.add('hidden');
+        }, 2600);
+      }
+
+      function showConfirmModal(title, message, onConfirm) {
+        const modal = document.getElementById('confirm-modal');
+        document.getElementById('confirm-title').textContent = title;
+        document.getElementById('confirm-message').textContent = message;
+        modal.classList.remove('hidden');
+
+        const btnOk = document.getElementById('btn-confirm-ok');
+        const btnCancel = document.getElementById('btn-confirm-cancel');
+
+        const cleanup = () => {
+          modal.classList.add('hidden');
+          btnOk.onclick = null;
+          btnCancel.onclick = null;
+        };
+
+        btnCancel.onclick = cleanup;
+        btnOk.onclick = () => {
+          cleanup();
+          onConfirm();
+        };
+      }
+
+      // ===================================================================
+      // 5. PERSISTÊNCIA LOCAL (LOCALSTORAGE)
+      // ===================================================================
+      function loadFromStorage() {
+        try {
+          const savedCatalog = localStorage.getItem(STORAGE_KEYS.CATALOG);
+          catalog = savedCatalog ? JSON.parse(savedCatalog) : [...DEFAULT_CATALOG];
+
+          const savedList = localStorage.getItem(STORAGE_KEYS.SAVED);
+          savedQuotes = savedList ? JSON.parse(savedList) : [];
+
+          const counter = localStorage.getItem(STORAGE_KEYS.COUNTER);
+          state.quoteNumber = counter ? parseInt(counter, 10) : 1;
+
+          const draft = localStorage.getItem(STORAGE_KEYS.DRAFT);
+          if (draft) {
+            const parsed = JSON.parse(draft);
+            state.client = { ...state.client, ...(parsed.client || {}) };
+            state.items = Array.isArray(parsed.items) ? parsed.items : [];
+            state.notes = parsed.notes || '';
+            if (typeof parsed.useQuantity === 'boolean') state.useQuantity = parsed.useQuantity;
+            if (typeof parsed.hideEmptyFields === 'boolean') state.hideEmptyFields = parsed.hideEmptyFields;
+            if (parsed.quoteNumber) state.quoteNumber = parsed.quoteNumber;
+          }
+        } catch (e) {
+          console.error('Erro ao ler dados locais:', e);
+          catalog = [...DEFAULT_CATALOG];
+        }
+      }
+
+      function saveDraft() {
+        try {
+          localStorage.setItem(STORAGE_KEYS.DRAFT, JSON.stringify({
+            quoteNumber: state.quoteNumber,
+            useQuantity: state.useQuantity,
+            hideEmptyFields: state.hideEmptyFields,
+            client: state.client,
+            items: state.items,
+            notes: state.notes
+          }));
+          document.getElementById('draft-status').textContent = '✓ Salvo automático';
+        } catch (e) {
+          console.error('Erro ao salvar rascunho:', e);
+        }
+      }
+
+      function saveCatalogStorage() {
+        localStorage.setItem(STORAGE_KEYS.CATALOG, JSON.stringify(catalog));
+      }
+
+      function saveHistoryStorage() {
+        localStorage.setItem(STORAGE_KEYS.SAVED, JSON.stringify(savedQuotes));
+      }
+
+      // ===================================================================
+      // 6. CÁLCULOS E SINCRONIZAÇÃO DA INTERFACE + FOLHA A4
+      // ===================================================================
+      function calculateTotal() {
+        return state.items.reduce((sum, item) => {
+          const qty = state.useQuantity ? (Number(item.qty) || 1) : 1;
+          return sum + (qty * (Number(item.price) || 0));
+        }, 0);
+      }
+
+      function syncInputsFromState() {
+        document.getElementById('input-cliente').value = state.client.name || '';
+        document.getElementById('input-telefone').value = state.client.phone || '';
+        document.getElementById('input-data').value = state.client.date || getTodayISO();
+        document.getElementById('input-cpfcnpj').value = state.client.cpfCnpj || '';
+        document.getElementById('input-email').value = state.client.email || '';
+        document.getElementById('input-endereco').value = state.client.address || '';
+        document.getElementById('input-notes').value = state.notes || '';
+        document.getElementById('toggle-qtd').checked = state.useQuantity;
+        document.getElementById('toggle-hide-empty').checked = state.hideEmptyFields;
+      }
+
+      function syncQuantityModeUI() {
+        const useQty = state.useQuantity;
+        const hint = document.getElementById('toggle-qtd-hint');
+        const qtyWrapper = document.getElementById('form-qty-wrapper');
+        const priceLabel = document.getElementById('item-price-label');
+        const inputsGrid = document.getElementById('item-inputs-grid');
+
+        if (useQty) {
+          hint.textContent = 'Ativado: exibe Qtd, Valor Unit. e Subtotal';
+          qtyWrapper.classList.remove('hidden');
+          inputsGrid.className = 'grid grid-cols-2 gap-3';
+          priceLabel.textContent = 'Valor Unitário (R$)';
+        } else {
+          hint.textContent = 'Desativado: exibe apenas Descrição e Valor fechado';
+          qtyWrapper.classList.add('hidden');
+          inputsGrid.className = 'grid grid-cols-1 gap-3';
+          priceLabel.textContent = 'Valor Fechado (R$)';
+        }
+      }
+
+      function renderAll() {
+        syncQuantityModeUI();
+        const total = calculateTotal();
+        const formattedTotal = formatCurrency(total);
+
+        document.getElementById('sticky-total').textContent = formattedTotal;
+        document.getElementById('editor-card-total').textContent = formattedTotal;
+        document.getElementById('items-count').textContent = state.items.length;
+
+        const btnClearItems = document.getElementById('btn-clear-items');
+        if (state.items.length > 0) {
+          btnClearItems.classList.remove('hidden');
+        } else {
+          btnClearItems.classList.add('hidden');
+        }
+
+        renderEditorItemsList();
+        renderQuickChips();
+        renderDocumentPreview(total, formattedTotal);
+        renderSavedQuotes();
+        renderCatalogManager();
+      }
+
+      function renderQuickChips() {
+        const container = document.getElementById('quick-chips-container');
+        if (catalog.length === 0) {
+          container.innerHTML = '<span class="text-xs text-gray-400 italic">Nenhum atalho cadastrado.</span>';
+          return;
+        }
+
+        container.innerHTML = catalog.map((cat) => `
+          <button
+            type="button"
+            data-cat-id="${cat.id}"
+            class="quick-add-chip touch-btn shrink-0 px-3 py-2 rounded-xl bg-gray-100 hover:bg-amber-100 active:bg-amber-200 border border-gray-200 hover:border-amber-300 text-left transition flex flex-col justify-center max-w-[205px]"
+          >
+            <span class="text-xs font-bold text-gray-800 line-clamp-1">${escapeHtml(cat.desc)}</span>
+            <span class="text-[11px] font-extrabold text-amber-700 mt-0.5">+ ${formatCurrency(cat.price)}</span>
+          </button>
+        `).join('');
+
+        container.querySelectorAll('.quick-add-chip').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const catItem = catalog.find((c) => c.id === btn.dataset.catId);
+            if (!catItem) return;
+            addOrIncrementItem(catItem.desc, 1, catItem.price);
+            showToast(`Adicionado: ${catItem.desc}`, '⚡');
+          });
+        });
+      }
+
+      function renderEditorItemsList() {
+        const listEl = document.getElementById('items-list');
+
+        if (state.items.length === 0) {
+          listEl.innerHTML = `
+            <div class="text-center py-8 px-4 rounded-2xl border-2 border-dashed border-gray-200 text-gray-400">
+              <p class="text-sm font-semibold text-gray-500">Nenhum item adicionado ainda</p>
+              <p class="text-xs mt-1">Toque nos atalhos acima ou preencha a descrição e valor.</p>
+            </div>
+          `;
+          return;
+        }
+
+        listEl.innerHTML = state.items.map((item, idx) => {
+          const qty = state.useQuantity ? item.qty : 1;
+          const subtotal = qty * item.price;
+          return `
+            <div class="p-3.5 rounded-2xl bg-gray-50 border border-gray-200 flex flex-col gap-2.5">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                  <span class="inline-block text-[10px] font-extrabold uppercase text-gray-400 mr-1">#${idx + 1}</span>
+                  <span class="text-sm font-bold text-gray-900 break-words">${escapeHtml(item.desc)}</span>
+                  ${state.useQuantity ? `<p class="text-xs text-gray-500 mt-0.5">Valor Unit.: ${formatCurrency(item.price)}</p>` : ''}
+                </div>
+
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    data-edit-id="${item.id}"
+                    title="Editar item"
+                    class="touch-btn w-11 rounded-xl bg-white border border-gray-200 hover:bg-gray-100 text-gray-600 flex items-center justify-center"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    data-del-id="${item.id}"
+                    title="Remover item"
+                    class="touch-btn w-11 rounded-xl bg-white border border-gray-200 hover:bg-red-50 text-red-600 flex items-center justify-center"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between pt-2 border-t border-gray-200/80">
+                ${state.useQuantity ? `
+                  <div class="flex items-center rounded-xl border border-gray-300 bg-white overflow-hidden">
+                    <button type="button" data-dec-id="${item.id}" class="touch-btn w-11 flex items-center justify-center font-extrabold text-lg text-gray-700 hover:bg-gray-100">−</button>
+                    <span class="px-3.5 text-sm font-extrabold text-gray-900">${item.qty}</span>
+                    <button type="button" data-inc-id="${item.id}" class="touch-btn w-11 flex items-center justify-center font-extrabold text-lg text-gray-700 hover:bg-gray-100">+</button>
+                  </div>
+                ` : `
+                  <span class="text-xs font-semibold text-gray-500">Valor fechado</span>
+                `}
+
+                <div class="text-right">
+                  <span class="block text-[10px] uppercase font-bold text-gray-400">${state.useQuantity ? 'Subtotal' : 'Valor'}</span>
+                  <span class="text-sm font-extrabold text-gray-900">${formatCurrency(subtotal)}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        listEl.querySelectorAll('[data-dec-id]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const item = state.items.find((i) => i.id === btn.dataset.decId);
+            if (!item) return;
+            if (item.qty > 1) {
+              item.qty = Math.round((item.qty - 1) * 100) / 100;
+            } else {
+              state.items = state.items.filter((i) => i.id !== item.id);
+            }
+            saveDraft();
+            renderAll();
+          });
+        });
+
+        listEl.querySelectorAll('[data-inc-id]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const item = state.items.find((i) => i.id === btn.dataset.incId);
+            if (!item) return;
+            item.qty = Math.round((item.qty + 1) * 100) / 100;
+            saveDraft();
+            renderAll();
+          });
+        });
+
+        listEl.querySelectorAll('[data-edit-id]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const item = state.items.find((i) => i.id === btn.dataset.editId);
+            if (!item) return;
+            state.editingItemId = item.id;
+            document.getElementById('item-desc').value = item.desc;
+            document.getElementById('item-qty').value = item.qty;
+            document.getElementById('item-price').value = formatNumberBR(item.price);
+            document.getElementById('btn-add-item-text').textContent = 'Salvar Alteração no Item';
+            document.getElementById('item-desc').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
+        });
+
+        listEl.querySelectorAll('[data-del-id]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            state.items = state.items.filter((i) => i.id !== btn.dataset.delId);
+            if (state.editingItemId === btn.dataset.delId) {
+              state.editingItemId = null;
+              document.getElementById('btn-add-item-text').textContent = 'Adicionar ao Orçamento';
+            }
+            saveDraft();
+            renderAll();
+            showToast('Item removido', '🗑️');
+          });
+        });
+      }
+
+      function updateA4PreviewScale() {
+        const container = document.getElementById('a4-preview-container');
+        const wrapper = document.getElementById('a4-scale-wrapper');
+        const sheet = document.getElementById('print-sheet');
+        if (!container || !wrapper || !sheet) return;
+
+        const availableWidth = container.clientWidth;
+        if (!availableWidth) return;
+
+        const scale = availableWidth < 794 ? (availableWidth / 794) : 1;
+        wrapper.style.transform = scale < 1 ? `scale(${scale})` : 'none';
+        container.style.height = scale < 1 ? `${Math.ceil(sheet.offsetHeight * scale)}px` : 'auto';
+      }
+
+      function renderDocumentPreview(total, formattedTotal) {
+        const numStr = String(state.quoteNumber || 1).padStart(3, '0');
+        document.getElementById('doc-number-display').textContent = `Nº ${numStr}`;
+
+        const fieldsMap = [
+          { rowId: 'doc-row-cliente', valId: 'doc-cliente', value: state.client.name.trim(), alwaysShow: false },
+          { rowId: 'doc-row-cpfcnpj', valId: 'doc-cpfcnpj', value: state.client.cpfCnpj.trim(), alwaysShow: false },
+          { rowId: 'doc-row-endereco', valId: 'doc-endereco', value: state.client.address.trim(), alwaysShow: false },
+          { rowId: 'doc-row-telefone', valId: 'doc-telefone', value: state.client.phone.trim(), alwaysShow: false },
+          { rowId: 'doc-row-data', valId: 'doc-data', value: formatDateBR(state.client.date), alwaysShow: true },
+          { rowId: 'doc-row-email', valId: 'doc-email', value: state.client.email.trim(), alwaysShow: false }
+        ];
+
+        fieldsMap.forEach((f) => {
+          const rowEl = document.getElementById(f.rowId);
+          const valEl = document.getElementById(f.valId);
+          const isEmpty = !f.value || f.value === '—';
+          valEl.textContent = isEmpty ? '—' : f.value;
+
+          if (!f.alwaysShow && state.hideEmptyFields && isEmpty) {
+            rowEl.classList.add('hidden');
+          } else {
+            rowEl.classList.remove('hidden');
+          }
+        });
+
+        const thQty = document.getElementById('doc-th-qty');
+        const thUnit = document.getElementById('doc-th-unit');
+        const thTotal = document.getElementById('doc-th-total');
+
+        if (state.useQuantity) {
+          thQty.classList.remove('hidden');
+          thUnit.classList.remove('hidden');
+          thTotal.textContent = 'TOTAL';
+        } else {
+          thQty.classList.add('hidden');
+          thUnit.classList.add('hidden');
+          thTotal.textContent = 'VALOR';
+        }
+
+        const tbody = document.getElementById('doc-items-tbody');
+        const colSpan = state.useQuantity ? 4 : 2;
+
+        if (state.items.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="${colSpan}" class="py-8 px-3 text-center text-gray-400 italic border-x border-gray-300">
+                Nenhum serviço ou material lançado neste orçamento.
+              </td>
+            </tr>
+          `;
+        } else {
+          tbody.innerHTML = state.items.map((item, idx) => {
+            const rowBg = idx % 2 === 1 ? 'bg-gray-50/80' : 'bg-white';
+            const qty = state.useQuantity ? item.qty : 1;
+            const subtotal = qty * item.price;
+
+            if (state.useQuantity) {
+              return `
+                <tr class="${rowBg}">
+                  <td class="py-2.5 px-3 border-x border-gray-300 font-medium text-gray-900">${escapeHtml(item.desc)}</td>
+                  <td class="py-2.5 px-2.5 border-x border-gray-300 text-center text-gray-800">${item.qty}</td>
+                  <td class="py-2.5 px-2.5 border-x border-gray-300 text-right text-gray-800">${formatCurrency(item.price)}</td>
+                  <td class="py-2.5 px-3 border-x border-gray-300 text-right font-bold text-gray-900">${formatCurrency(subtotal)}</td>
+                </tr>
+              `;
+            }
+
+            return `
+              <tr class="${rowBg}">
+                <td class="py-2.5 px-3 border-x border-gray-300 font-medium text-gray-900">${escapeHtml(item.desc)}</td>
+                <td class="py-2.5 px-3 border-x border-gray-300 text-right font-bold text-gray-900">${formatCurrency(subtotal)}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+
+        document.getElementById('doc-total').textContent = formattedTotal;
+
+        const notesBox = document.getElementById('doc-notes-box');
+        if (state.notes.trim()) {
+          notesBox.classList.remove('hidden');
+          document.getElementById('doc-notes-text').textContent = state.notes.trim();
+        } else {
+          notesBox.classList.add('hidden');
+        }
+
+        requestAnimationFrame(updateA4PreviewScale);
+      }
+
+      // ===================================================================
+      // 7. HISTÓRICO DE ORÇAMENTOS E GERENCIADOR DE ATALHOS (ABA SALVOS)
+      // ===================================================================
+      function saveCurrentQuoteToHistory() {
+        const snapshot = {
+          id: 'quote_' + Date.now(),
+          quoteNumber: state.quoteNumber,
+          useQuantity: state.useQuantity,
+          hideEmptyFields: state.hideEmptyFields,
+          client: { ...state.client },
+          items: JSON.parse(JSON.stringify(state.items)),
+          notes: state.notes,
+          total: calculateTotal(),
+          savedAt: new Date().toISOString()
+        };
+        savedQuotes.unshift(snapshot);
+        saveHistoryStorage();
+        renderSavedQuotes();
+        showToast('Orçamento salvo no histórico!', '💾');
+      }
+
+      function renderSavedQuotes() {
+        const listEl = document.getElementById('saved-quotes-list');
+        const badgeEl = document.getElementById('saved-count-badge');
+        const query = (document.getElementById('search-saved').value || '').trim().toLowerCase();
+
+        badgeEl.textContent = savedQuotes.length;
+
+        const filtered = savedQuotes.filter((q) => {
+          const clientName = (q.client && q.client.name ? q.client.name : '').toLowerCase();
+          return !query || clientName.includes(query);
+        });
+
+        if (filtered.length === 0) {
+          listEl.innerHTML = `
+            <div class="bg-white rounded-2xl p-6 border border-gray-200 text-center text-gray-400">
+              <p class="text-sm font-bold text-gray-600">Nenhum orçamento salvo encontrado</p>
+              <p class="text-xs mt-1">Toque no botão "Salvar" acima ou na barra inferior para guardar seus orçamentos.</p>
+            </div>
+          `;
+          return;
+        }
+
+        listEl.innerHTML = filtered.map((q) => {
+          const numStr = String(q.quoteNumber || 1).padStart(3, '0');
+          const clientName = q.client && q.client.name ? q.client.name : 'Cliente sem nome';
+          const dateStr = q.client && q.client.date ? formatDateBR(q.client.date) : '—';
+          return `
+            <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-xs space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                  <span class="inline-block text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-gray-100 text-gray-600">
+                    Orçamento Nº ${numStr} • ${dateStr}
+                  </span>
+                  <h4 class="text-sm font-extrabold text-gray-900 mt-1 truncate">${escapeHtml(clientName)}</h4>
+                  <p class="text-xs text-gray-500">${(q.items || []).length} item(ns)</p>
+                </div>
+                <span class="text-sm font-black text-gray-900 shrink-0">${formatCurrency(q.total || 0)}</span>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2 pt-2 border-t border-gray-100">
+                <button type="button" data-load-quote="${q.id}" class="touch-btn px-2 rounded-xl bg-hauss-dark text-white text-xs font-bold">
+                  Abrir/Editar
+                </button>
+                <button type="button" data-dup-quote="${q.id}" class="touch-btn px-2 rounded-xl bg-gray-100 text-gray-800 text-xs font-bold">
+                  Duplicar
+                </button>
+                <button type="button" data-del-quote="${q.id}" class="touch-btn px-2 rounded-xl bg-red-50 text-red-600 text-xs font-bold">
+                  Excluir
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        listEl.querySelectorAll('[data-load-quote]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const found = savedQuotes.find((q) => q.id === btn.dataset.loadQuote);
+            if (!found) return;
+            state.quoteNumber = found.quoteNumber || 1;
+            state.useQuantity = typeof found.useQuantity === 'boolean' ? found.useQuantity : true;
+            state.hideEmptyFields = typeof found.hideEmptyFields === 'boolean' ? found.hideEmptyFields : true;
+            state.client = { ...found.client };
+            state.items = JSON.parse(JSON.stringify(found.items || []));
+            state.notes = found.notes || '';
+            state.editingItemId = null;
+            syncInputsFromState();
+            saveDraft();
+            renderAll();
+            switchTab('editor');
+            showToast('Orçamento carregado para edição!', '📂');
+          });
+        });
+
+        listEl.querySelectorAll('[data-dup-quote]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const found = savedQuotes.find((q) => q.id === btn.dataset.dupQuote);
+            if (!found) return;
+            state.quoteNumber = getNextQuoteNumber();
+            state.useQuantity = typeof found.useQuantity === 'boolean' ? found.useQuantity : true;
+            state.client = { ...found.client, date: getTodayISO() };
+            state.items = JSON.parse(JSON.stringify(found.items || []));
+            state.notes = found.notes || '';
+            state.editingItemId = null;
+            syncInputsFromState();
+            saveDraft();
+            renderAll();
+            switchTab('editor');
+            showToast('Cópia criada com novo número!', '📑');
+          });
+        });
+
+        listEl.querySelectorAll('[data-del-quote]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            showConfirmModal(
+              'Excluir orçamento salvo?',
+              'Este orçamento será removido permanentemente do histórico.',
+              () => {
+                savedQuotes = savedQuotes.filter((q) => q.id !== btn.dataset.delQuote);
+                saveHistoryStorage();
+                renderSavedQuotes();
+                showToast('Orçamento excluído', '🗑️');
+              }
+            );
+          });
+        });
+      }
+
+      function renderCatalogManager() {
+        const listEl = document.getElementById('catalog-list');
+        const badgeEl = document.getElementById('catalog-count-badge');
+        badgeEl.textContent = catalog.length;
+
+        if (catalog.length === 0) {
+          listEl.innerHTML = '<p class="text-xs text-gray-400 text-center py-3">Nenhum atalho cadastrado.</p>';
+          return;
+        }
+
+        listEl.innerHTML = catalog.map((item) => `
+          <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-gray-50 border border-gray-200">
+            <div class="min-w-0">
+              <p class="text-xs sm:text-sm font-bold text-gray-800 truncate">${escapeHtml(item.desc)}</p>
+              <p class="text-xs font-extrabold text-amber-700">${formatCurrency(item.price)}</p>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                data-edit-cat="${item.id}"
+                class="touch-btn px-3 rounded-lg bg-white border border-gray-200 hover:bg-gray-100 text-gray-700 text-xs font-bold"
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                data-del-cat="${item.id}"
+                class="touch-btn px-3 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold"
+              >
+                Remover
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        listEl.querySelectorAll('[data-edit-cat]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const item = catalog.find((c) => c.id === btn.dataset.editCat);
+            if (!item) return;
+            editingCatalogId = item.id;
+            document.getElementById('catalog-form-title').textContent = 'Editando Atalho Rápido';
+            document.getElementById('cat-new-desc').value = item.desc;
+            document.getElementById('cat-new-price').value = formatNumberBR(item.price);
+            document.getElementById('btn-add-catalog').textContent = 'Salvar Alteração';
+            document.getElementById('btn-cancel-edit-catalog').classList.remove('hidden');
+            document.getElementById('cat-new-desc').focus();
+          });
+        });
+
+        listEl.querySelectorAll('[data-del-cat]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            catalog = catalog.filter((c) => c.id !== btn.dataset.delCat);
+            if (editingCatalogId === btn.dataset.delCat) {
+              resetCatalogForm();
+            }
+            saveCatalogStorage();
+            renderAll();
+            showToast('Atalho removido', '🗑️');
+          });
+        });
+      }
+
+      function resetCatalogForm() {
+        editingCatalogId = null;
+        document.getElementById('catalog-form-title').textContent = 'Adicionar Novo Atalho Rápido';
+        document.getElementById('cat-new-desc').value = '';
+        document.getElementById('cat-new-price').value = '0,00';
+        document.getElementById('btn-add-catalog').textContent = '+ Salvar nos Atalhos Rápidos';
+        document.getElementById('btn-cancel-edit-catalog').classList.add('hidden');
+      }
+
+      document.getElementById('btn-cancel-edit-catalog').addEventListener('click', resetCatalogForm);
+
+      document.getElementById('btn-add-catalog').addEventListener('click', () => {
+        const descEl = document.getElementById('cat-new-desc');
+        const priceEl = document.getElementById('cat-new-price');
+        const desc = descEl.value.trim();
+        const price = parseCurrencyInput(priceEl.value);
+
+        if (!desc) {
+          showToast('Digite o nome do serviço ou material', '⚠️');
+          descEl.focus();
+          return;
+        }
+
+        if (editingCatalogId) {
+          const target = catalog.find((c) => c.id === editingCatalogId);
+          if (target) {
+            target.desc = desc;
+            target.price = price;
+          }
+          resetCatalogForm();
+          saveCatalogStorage();
+          renderAll();
+          showToast('Atalho atualizado!', '✅');
+        } else {
+          catalog.unshift({
+            id: 'cat_' + Date.now(),
+            desc,
+            price
+          });
+          resetCatalogForm();
+          saveCatalogStorage();
+          renderAll();
+          showToast('Atalho salvo com sucesso!', '⚡');
+        }
+      });
+
+      // ===================================================================
+      // 8. GERENCIAMENTO DE ITENS DO ORÇAMENTO
+      // ===================================================================
+      function addOrIncrementItem(desc, qty, price) {
+        const cleanDesc = desc.trim();
+        if (!cleanDesc) return;
+
+        const existing = state.items.find(
+          (i) => i.desc.toLowerCase() === cleanDesc.toLowerCase() && Math.abs(i.price - price) < 0.001
+        );
+
+        if (existing) {
+          existing.qty = Math.round((existing.qty + qty) * 100) / 100;
+        } else {
+          state.items.push({
+            id: 'item_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+            desc: cleanDesc,
+            qty: qty,
+            price: price
+          });
+        }
+
+        saveDraft();
+        renderAll();
+      }
+
+      document.getElementById('btn-add-item').addEventListener('click', () => {
+        const descEl = document.getElementById('item-desc');
+        const qtyEl = document.getElementById('item-qty');
+        const priceEl = document.getElementById('item-price');
+        const saveCatEl = document.getElementById('item-save-catalog');
+
+        const desc = descEl.value.trim();
+        const qty = parseFloat(qtyEl.value) || 1;
+        const price = parseCurrencyInput(priceEl.value);
+
+        if (!desc) {
+          showToast('Digite a descrição do serviço ou material', '⚠️');
+          descEl.focus();
+          return;
+        }
+
+        if (state.editingItemId) {
+          const target = state.items.find((i) => i.id === state.editingItemId);
+          if (target) {
+            target.desc = desc;
+            target.qty = qty;
+            target.price = price;
+          }
+          state.editingItemId = null;
+          document.getElementById('btn-add-item-text').textContent = 'Adicionar ao Orçamento';
+          showToast('Item atualizado!', '✅');
+        } else {
+          addOrIncrementItem(desc, qty, price);
+          showToast('Item adicionado ao orçamento!', '✅');
+        }
+
+        if (saveCatEl.checked) {
+          const existsInCat = catalog.some((c) => c.desc.toLowerCase() === desc.toLowerCase());
+          if (!existsInCat) {
+            catalog.unshift({
+              id: 'cat_' + Date.now(),
+              desc,
+              price
+            });
+            saveCatalogStorage();
+          }
+          saveCatEl.checked = false;
+        }
+
+        descEl.value = '';
+        qtyEl.value = '1';
+        priceEl.value = '0,00';
+        saveDraft();
+        renderAll();
+      });
+
+      document.getElementById('btn-qty-minus').addEventListener('click', () => {
+        const qtyEl = document.getElementById('item-qty');
+        const current = parseFloat(qtyEl.value) || 1;
+        qtyEl.value = current > 1 ? Math.round((current - 1) * 100) / 100 : 1;
+      });
+
+      document.getElementById('btn-qty-plus').addEventListener('click', () => {
+        const qtyEl = document.getElementById('item-qty');
+        const current = parseFloat(qtyEl.value) || 0;
+        qtyEl.value = Math.round((current + 1) * 100) / 100;
+      });
+
+      document.getElementById('btn-clear-items').addEventListener('click', () => {
+        showConfirmModal(
+          'Limpar itens?',
+          'Isso removerá todos os serviços e materiais lançados neste orçamento.',
+          () => {
+            state.items = [];
+            state.editingItemId = null;
+            document.getElementById('btn-add-item-text').textContent = 'Adicionar ao Orçamento';
+            saveDraft();
+            renderAll();
+            showToast('Lista de itens limpa', '🗑️');
+          }
+        );
+      });
+
+      // ===================================================================
+      // 9. WHATSAPP E EXPORTAÇÃO PDF
+      // ===================================================================
+      function buildPlainTextQuote() {
+        const total = formatCurrency(calculateTotal());
+        const numStr = String(state.quoteNumber || 1).padStart(3, '0');
+        const lines = [
+          `*ELETRO HAUSS - Instalações Elétricas*`,
+          `📞 (48) 98852-1076`,
+          `--------------------------------`,
+          `*ORÇAMENTO Nº ${numStr}*`,
+          `📅 Data: ${formatDateBR(state.client.date)}`
+        ];
+
+        if (state.client.name.trim()) lines.push(`👤 Cliente: ${state.client.name.trim()}`);
+        if (state.client.address.trim()) lines.push(`📍 Endereço: ${state.client.address.trim()}`);
+
+        lines.push(`--------------------------------`);
+        lines.push(`*ITENS E SERVIÇOS:*`);
+
+        if (state.items.length === 0) {
+          lines.push(`(Nenhum item lançado)`);
+        } else {
+          state.items.forEach((item, i) => {
+            if (state.useQuantity) {
+              const sub = formatCurrency(item.qty * item.price);
+              lines.push(`${i + 1}. ${item.desc}`);
+              lines.push(`   ${item.qty}x ${formatCurrency(item.price)} = *${sub}*`);
+            } else {
+              lines.push(`${i + 1}. ${item.desc} — *${formatCurrency(item.price)}*`);
+            }
+          });
+        }
+
+        lines.push(`--------------------------------`);
+        lines.push(`💰 *TOTAL GERAL: ${total}*`);
+
+        if (state.notes.trim()) {
+          lines.push(`--------------------------------`);
+          lines.push(`📝 *Obs.:* ${state.notes.trim()}`);
+        }
+
+        return lines.join('\n');
+      }
+
+      function sendToWhatsApp() {
+        const text = encodeURIComponent(buildPlainTextQuote());
+        const rawPhone = (state.client.phone || '').replace(/\D/g, '');
+        const waUrl = rawPhone.length >= 10
+          ? `https://wa.me/55${rawPhone}?text=${text}`
+          : `https://wa.me/?text=${text}`;
+
+        window.open(waUrl, '_blank', 'noopener,noreferrer');
+      }
+
+      function buildPdfFileName() {
+        const numStr = String(state.quoteNumber || 1).padStart(3, '0');
+        const rawName = (state.client.name || '').trim();
+        if (!rawName) return `Orcamento-Eletro-Hauss-${numStr}.pdf`;
+        const cleanName = rawName
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-zA-Z0-9\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-')
+          .slice(0, 32);
+        return `Orcamento-${numStr}-${cleanName || 'Cliente'}.pdf`;
+      }
+
+      function downloadBlobFile(blob, fileName) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+      }
+
+      let lastGeneratedPdfFile = null;
+      let lastGeneratedPdfBlob = null;
+
+      function openReadyPdfShareModal(pdfFile, pdfBlob, desktopMode = false) {
+        lastGeneratedPdfFile = pdfFile;
+        lastGeneratedPdfBlob = pdfBlob;
+
+        const modal = document.getElementById('pdf-share-modal');
+        const titleEl = document.getElementById('pdf-share-modal-title');
+        const descEl = document.getElementById('pdf-share-modal-desc');
+        const shareBtn = document.getElementById('btn-modal-share-now');
+
+        if (desktopMode) {
+          titleEl.textContent = 'PDF Baixado no Dispositivo!';
+          descEl.textContent = 'O arquivo PDF já foi baixado. Abra o WhatsApp abaixo e anexe o PDF na conversa do cliente.';
+          shareBtn.innerHTML = '<span>💬 Abrir WhatsApp para Anexar PDF</span>';
+        } else {
+          titleEl.textContent = 'PDF Gerado com Sucesso!';
+          descEl.textContent = 'Toque no botão verde abaixo para enviar o arquivo PDF direto no WhatsApp.';
+          shareBtn.innerHTML = '<span>📲 Compartilhar PDF no WhatsApp</span>';
+        }
+
+        modal.classList.remove('hidden');
+      }
+
+      document.getElementById('btn-close-pdf-share-modal').addEventListener('click', () => {
+        document.getElementById('pdf-share-modal').classList.add('hidden');
+      });
+
+      document.getElementById('btn-modal-download-pdf').addEventListener('click', () => {
+        if (lastGeneratedPdfBlob && lastGeneratedPdfFile) {
+          downloadBlobFile(lastGeneratedPdfBlob, lastGeneratedPdfFile.name);
+          showToast('PDF baixado no aparelho!', '📄');
+        }
+      });
+
+      document.getElementById('btn-modal-share-now').addEventListener('click', async () => {
+        document.getElementById('pdf-share-modal').classList.add('hidden');
+        if (lastGeneratedPdfFile && navigator.canShare && navigator.canShare({ files: [lastGeneratedPdfFile] })) {
+          try {
+            await navigator.share({
+              files: [lastGeneratedPdfFile],
+              title: lastGeneratedPdfFile.name.replace('.pdf', '')
+            });
+            showToast('PDF compartilhado!', '✅');
+            return;
+          } catch (err) {
+            if (err && err.name === 'AbortError') return;
+          }
+        }
+        // Fallback: abre WhatsApp caso navegador não suporte envio nativo de arquivo
+        const rawPhone = (state.client.phone || '').replace(/\D/g, '');
+        const waUrl = rawPhone.length >= 10 ? `https://wa.me/55${rawPhone}` : `https://wa.me/`;
+        window.open(waUrl, '_blank', 'noopener,noreferrer');
+      });
+
+      async function generateQuotePdfFile() {
+        if (typeof html2pdf === 'undefined') {
+          throw new Error('Biblioteca PDF indisponível offline');
+        }
+
+        renderDocumentPreview(calculateTotal(), formatCurrency(calculateTotal()));
+
+        const originalSheet = document.getElementById('print-sheet');
+        const host = document.createElement('div');
+        host.style.position = 'fixed';
+        host.style.left = '-10000px';
+        host.style.top = '0';
+        host.style.width = '794px';
+        host.style.background = '#ffffff';
+        host.style.zIndex = '-1';
+
+        const clone = originalSheet.cloneNode(true);
+        clone.removeAttribute('id');
+        clone.style.width = '794px';
+        clone.style.minHeight = '1120px';
+        clone.style.border = 'none';
+        clone.style.borderRadius = '0';
+        clone.style.boxShadow = 'none';
+        clone.style.margin = '0';
+
+        host.appendChild(clone);
+        document.body.appendChild(host);
+
+        try {
+          const fileName = buildPdfFileName();
+          const opt = {
+            margin: 0,
+            filename: fileName,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: {
+              scale: 2,
+              useCORS: true,
+              logging: false,
+              width: 794,
+              windowWidth: 794,
+              scrollX: 0,
+              scrollY: 0
+            },
+            jsPDF: {
+              unit: 'px',
+              format: [794, 1123],
+              orientation: 'portrait',
+              hotfixes: ['px_scaling']
+            }
+          };
+
+          const pdfBlob = await html2pdf().set(opt).from(clone).outputPdf('blob');
+          const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
+          return { pdfFile, pdfBlob };
+        } finally {
+          document.body.removeChild(host);
+        }
+      }
+
+      let isGeneratingPdfShare = false;
+      async function sharePdfToWhatsApp() {
+        if (isGeneratingPdfShare) return;
+        isGeneratingPdfShare = true;
+
+        const footerTextEl = document.getElementById('btn-footer-whatsapp-text');
+        const previewTextEl = document.getElementById('btn-preview-whatsapp-text');
+        const origFooterText = footerTextEl ? footerTextEl.textContent : 'PDF no Zap';
+        const origPreviewText = previewTextEl ? previewTextEl.textContent : 'Compartilhar PDF no WhatsApp';
+
+        if (footerTextEl) footerTextEl.textContent = 'Gerando...';
+        if (previewTextEl) previewTextEl.textContent = 'Gerando PDF...';
+        showToast('Gerando PDF do orçamento...', '⏳');
+
+        try {
+          const { pdfFile, pdfBlob } = await generateQuotePdfFile();
+
+          if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+            try {
+              await navigator.share({
+                files: [pdfFile],
+                title: pdfFile.name.replace('.pdf', '')
+              });
+              showToast('PDF pronto para envio no WhatsApp!', '✅');
+            } catch (shareErr) {
+              if (shareErr && shareErr.name === 'AbortError') {
+                // Usuário fechou a folha de compartilhamento
+              } else {
+                // Caso o navegador exija um toque direto pós-geração, abre o botão imediato
+                openReadyPdfShareModal(pdfFile, pdfBlob, false);
+              }
+            }
+          } else {
+            // Navegador desktop sem suporte a compartilhamento direto de arquivo: baixa o PDF e oferece abrir o WhatsApp
+            downloadBlobFile(pdfBlob, pdfFile.name);
+            openReadyPdfShareModal(pdfFile, pdfBlob, true);
+          }
+        } catch (err) {
+          console.error('Erro ao gerar PDF para compartilhamento:', err);
+          showToast('Não foi possível gerar o PDF direto. Abrindo impressão...', '⚠️');
+          triggerPrintPDF();
+        } finally {
+          isGeneratingPdfShare = false;
+          if (footerTextEl) footerTextEl.textContent = origFooterText;
+          if (previewTextEl) previewTextEl.textContent = origPreviewText;
+        }
+      }
+
+      function triggerPrintPDF() {
+        switchTab('preview');
+        renderDocumentPreview(calculateTotal(), formatCurrency(calculateTotal()));
+        setTimeout(() => {
+          window.print();
+        }, 180);
+      }
+
+      window.addEventListener('beforeprint', () => {
+        renderDocumentPreview(calculateTotal(), formatCurrency(calculateTotal()));
+      });
+
+      document.getElementById('btn-footer-save').addEventListener('click', saveCurrentQuoteToHistory);
+      document.getElementById('btn-save-history-top').addEventListener('click', saveCurrentQuoteToHistory);
+      document.getElementById('btn-footer-whatsapp').addEventListener('click', sharePdfToWhatsApp);
+      document.getElementById('btn-preview-whatsapp').addEventListener('click', sharePdfToWhatsApp);
+      document.getElementById('btn-preview-whatsapp-text-only').addEventListener('click', sendToWhatsApp);
+      document.getElementById('btn-footer-pdf').addEventListener('click', triggerPrintPDF);
+      document.getElementById('btn-print-pdf').addEventListener('click', () => window.print());
+
+      // ===================================================================
+      // 10. NAVEGAÇÃO ENTRE 4 ABAS, CONTROLES DA LOGO E BACKUP JSON
+      // ===================================================================
+      window.switchTab = function (tabName, subTab) {
+        const tabs = ['editor', 'preview', 'logo', 'saved'];
+        tabs.forEach((t) => {
+          const section = document.getElementById(`tab-${t}`);
+          if (t === tabName) {
+            section.classList.remove('hidden');
+          } else {
+            section.classList.add('hidden');
+          }
+        });
+
+        // Mostra barra de ação rápida flutuante nas abas Orçamento e Ver PDF
+        const quickActionBar = document.getElementById('quick-action-bar');
+        if (tabName === 'editor' || tabName === 'preview') {
+          quickActionBar.classList.remove('hidden');
+        } else {
+          quickActionBar.classList.add('hidden');
+        }
+
+        document.querySelectorAll('.tab-btn').forEach((btn) => {
+          if (btn.dataset.tab === tabName) {
+            btn.className = 'tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-extrabold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition bg-hauss-dark text-white shadow-xs';
+          } else {
+            btn.className = 'tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-bold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition text-gray-600 hover:bg-gray-200/70';
+          }
+        });
+
+        if (tabName === 'saved' && subTab === 'catalog') {
+          activateSavedSubtab('catalog');
+        } else if (tabName === 'saved') {
+          activateSavedSubtab('history');
+        } else if (tabName === 'preview') {
+          requestAnimationFrame(updateA4PreviewScale);
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      function activateSavedSubtab(sub) {
+        const btnHist = document.getElementById('subtab-history-btn');
+        const btnCat = document.getElementById('subtab-catalog-btn');
+        const panelHist = document.getElementById('panel-history');
+        const panelCat = document.getElementById('panel-catalog');
+
+        if (sub === 'catalog') {
+          btnCat.className = 'touch-btn px-3 rounded-xl text-xs sm:text-sm font-bold bg-hauss-dark text-white transition';
+          btnHist.className = 'touch-btn px-3 rounded-xl text-xs sm:text-sm font-bold text-gray-600 hover:bg-gray-100 transition';
+          panelCat.classList.remove('hidden');
+          panelHist.classList.add('hidden');
+        } else {
+          btnHist.className = 'touch-btn px-3 rounded-xl text-xs sm:text-sm font-bold bg-hauss-dark text-white transition';
+          btnCat.className = 'touch-btn px-3 rounded-xl text-xs sm:text-sm font-bold text-gray-600 hover:bg-gray-100 transition';
+          panelHist.classList.remove('hidden');
+          panelCat.classList.add('hidden');
+        }
+      }
+
+      document.querySelectorAll('.tab-btn').forEach((btn) => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      });
+
+      document.getElementById('subtab-history-btn').addEventListener('click', () => activateSavedSubtab('history'));
+      document.getElementById('subtab-catalog-btn').addEventListener('click', () => activateSavedSubtab('catalog'));
+      document.getElementById('search-saved').addEventListener('input', renderSavedQuotes);
+
+      // Chave "Trabalhar com Quantidades"
+      document.getElementById('toggle-qtd').addEventListener('change', (e) => {
+        state.useQuantity = e.target.checked;
+        saveDraft();
+        renderAll();
+      });
+
+      // Chave "Ocultar campos em branco no PDF"
+      document.getElementById('toggle-hide-empty').addEventListener('change', (e) => {
+        state.hideEmptyFields = e.target.checked;
+        saveDraft();
+        renderDocumentPreview(calculateTotal(), formatCurrency(calculateTotal()));
+      });
+
+      // Controles da Aba 3: Logo
+      document.getElementById('logo-file-input').addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleLogoUpload(e.target.files[0]);
+          e.target.value = '';
+        }
+      });
+
+      document.getElementById('logo-height-slider').addEventListener('input', (e) => {
+        logoSettings.height = parseInt(e.target.value, 10) || 80;
+        saveLogoSettings();
+        applyLogoAcrossApp();
+      });
+
+      document.getElementById('btn-logo-size-minus').addEventListener('click', () => {
+        logoSettings.height = Math.max(40, (Number(logoSettings.height) || 80) - 4);
+        saveLogoSettings();
+        applyLogoAcrossApp();
+      });
+
+      document.getElementById('btn-logo-size-plus').addEventListener('click', () => {
+        logoSettings.height = Math.min(160, (Number(logoSettings.height) || 80) + 4);
+        saveLogoSettings();
+        applyLogoAcrossApp();
+      });
+
+      document.getElementById('btn-pos-banner').addEventListener('click', () => {
+        logoSettings.position = 'banner';
+        saveLogoSettings();
+        applyLogoAcrossApp();
+      });
+
+      document.getElementById('btn-pos-below').addEventListener('click', () => {
+        logoSettings.position = 'below';
+        saveLogoSettings();
+        applyLogoAcrossApp();
+      });
+
+      document.getElementById('toggle-logo-pwa-icon').addEventListener('change', (e) => {
+        logoSettings.useAsAppIcon = e.target.checked;
+        saveLogoSettings();
+        applyLogoAcrossApp();
+        showToast('Preferência de ícone do App atualizada!', '📲');
+      });
+
+      document.getElementById('btn-remove-logo').addEventListener('click', () => {
+        logoSettings.dataUrl = '';
+        localStorage.removeItem(LEGACY_LOGO_KEY);
+        saveLogoSettings();
+        applyLogoAcrossApp();
+        showToast('Imagem da logo removida', '🗑️');
+      });
+
+      // Exportar / Restaurar / Limpar Histórico
+      document.getElementById('btn-export-backup').addEventListener('click', () => {
+        const backupData = {
+          app: 'Eletro Hauss Orçamentos',
+          exportedAt: new Date().toISOString(),
+          quoteNumber: state.quoteNumber,
+          savedQuotes,
+          catalog,
+          logoSettings
+        };
+        const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup-eletro-hauss-${getTodayISO()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Backup exportado com sucesso!', '📦');
+      });
+
+      document.getElementById('backup-file-input').addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+          try {
+            const parsed = JSON.parse(ev.target.result);
+            if (Array.isArray(parsed.savedQuotes)) {
+              savedQuotes = parsed.savedQuotes;
+              saveHistoryStorage();
+            }
+            if (Array.isArray(parsed.catalog)) {
+              catalog = parsed.catalog;
+              saveCatalogStorage();
+            }
+            if (parsed.quoteNumber) {
+              state.quoteNumber = parsed.quoteNumber;
+              localStorage.setItem(STORAGE_KEYS.COUNTER, String(state.quoteNumber));
+            }
+            if (parsed.logoSettings) {
+              logoSettings = { ...logoSettings, ...parsed.logoSettings };
+              saveLogoSettings();
+              applyLogoAcrossApp();
+            }
+            renderAll();
+            showToast('Backup restaurado com sucesso!', '✅');
+          } catch (err) {
+            showToast('Arquivo de backup inválido.', '⚠️');
+          }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+      });
+
+      document.getElementById('btn-wipe-all-data').addEventListener('click', () => {
+        showConfirmModal(
+          'Limpar todo o histórico?',
+          'Todos os orçamentos salvos neste aparelho serão apagados.',
+          () => {
+            savedQuotes = [];
+            saveHistoryStorage();
+            renderSavedQuotes();
+            showToast('Histórico limpo', '🗑️');
+          }
+        );
+      });
+
+      // Listeners dos inputs do cliente
+      document.getElementById('input-cliente').addEventListener('input', (e) => {
+        state.client.name = e.target.value;
+        saveDraft();
+        renderDocumentPreview(calculateTotal(), formatCurrency(calculateTotal()));
+      });
+
+      document.getElementById('input-telefone').addEventListener('input', (e) => {
+        e.target.value = maskPhone(e.target.value);
+        state.client.phone = e.target.value;
+        saveDraft();
+        renderDocumentPreview(calculateTotal(), formatCurrency(calculateTotal()));
+      });
+
+      document.getElementById('input-data').addEventListener('input', (e) => {
+        state.client.date = e.target.value;
+        saveDraft();
+        renderDocumentPreview(calculateTotal(), formatCurrency(calculateTotal()));
+      });
+
+      document.getElementById('input-cpfcnpj').addEventListener('input', (e) => {
+        e.target.value = maskCpfCnpj(e.target.value);
+        state.client.cpfCnpj = e.target.value;
+        saveDraft();
+        renderDocumentPreview(calculateTotal(), formatCurrency(calculateTotal()));
+      });
+
+      document.getElementById('input-email').addEventListener('input', (e) => {
+        state.client.email = e.target.value;
+        saveDraft();
+        renderDocumentPreview(calculateTotal(), formatCurrency(calculateTotal()));
+      });
+
+      document.getElementById('input-endereco').addEventListener('input', (e) => {
+        state.client.address = e.target.value;
+        saveDraft();
+        renderDocumentPreview(calculateTotal(), formatCurrency(calculateTotal()));
+      });
+
+      document.getElementById('input-notes').addEventListener('input', (e) => {
+        state.notes = e.target.value;
+        saveDraft();
+        renderDocumentPreview(calculateTotal(), formatCurrency(calculateTotal()));
+      });
+
+      document.querySelectorAll('.note-chip').forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const noteInput = document.getElementById('input-notes');
+          const textToAdd = chip.dataset.note;
+          noteInput.value = noteInput.value.trim()
+            ? `${noteInput.value.trim()}\n${textToAdd}`
+            : textToAdd;
+          state.notes = noteInput.value;
+          saveDraft();
+          renderDocumentPreview(calculateTotal(), formatCurrency(calculateTotal()));
+          showToast('Observação inserida!', '📝');
+        });
+      });
+
+      document.getElementById('item-price').addEventListener('input', (e) => applyCurrencyMask(e.target));
+      document.getElementById('cat-new-price').addEventListener('input', (e) => applyCurrencyMask(e.target));
+
+      function getNextQuoteNumber() {
+        const current = parseInt(localStorage.getItem(STORAGE_KEYS.COUNTER) || '1', 10);
+        const next = current + 1;
+        localStorage.setItem(STORAGE_KEYS.COUNTER, String(next));
+        return next;
+      }
+
+      document.getElementById('btn-new-blank').addEventListener('click', () => {
+        showConfirmModal(
+          'Começar novo orçamento?',
+          'Os dados atuais serão limpos para você iniciar um novo orçamento em branco.',
+          () => {
+            state = {
+              quoteNumber: getNextQuoteNumber(),
+              useQuantity: state.useQuantity,
+              hideEmptyFields: state.hideEmptyFields,
+              client: {
+                name: '',
+                cpfCnpj: '',
+                phone: '',
+                email: '',
+                address: '',
+                date: getTodayISO()
+              },
+              items: [],
+              notes: '',
+              editingItemId: null
+            };
+            document.getElementById('btn-add-item-text').textContent = 'Adicionar ao Orçamento';
+            syncInputsFromState();
+            saveDraft();
+            renderAll();
+            switchTab('editor');
+            showToast('Novo orçamento pronto!', '✨');
+          }
+        );
+      });
+
+      const installModal = document.getElementById('install-modal');
+      document.getElementById('btn-open-install').addEventListener('click', () => {
+        installModal.classList.remove('hidden');
+      });
+      document.getElementById('btn-close-install-modal').addEventListener('click', () => {
+        installModal.classList.add('hidden');
+      });
+      document.getElementById('btn-ok-install-modal').addEventListener('click', () => {
+        installModal.classList.add('hidden');
+      });
+      document.getElementById('btn-banner-close').addEventListener('click', () => {
+        document.getElementById('pwa-smart-banner').classList.add('hidden');
+      });
+
+      async function triggerNativeInstall() {
+        if (!deferredInstallPrompt) {
+          installModal.classList.remove('hidden');
+          return;
+        }
+        deferredInstallPrompt.prompt();
+        const choice = await deferredInstallPrompt.userChoice;
+        if (choice.outcome === 'accepted') {
+          deferredInstallPrompt = null;
+        }
+      }
+
+      document.getElementById('btn-banner-install').addEventListener('click', triggerNativeInstall);
+      document.getElementById('btn-trigger-native-install').addEventListener('click', triggerNativeInstall);
+
+      // ===================================================================
+      // 11. INICIALIZAÇÃO DO SISTEMA E OBSERVADOR DE TELA (REALME 12 5G)
+      // ===================================================================
+      window.addEventListener('resize', updateA4PreviewScale);
+      if ('ResizeObserver' in window) {
+        const ro = new ResizeObserver(() => updateA4PreviewScale());
+        const previewContainer = document.getElementById('a4-preview-container');
+        if (previewContainer) ro.observe(previewContainer);
+      }
+
+      loadLogoSettings();
+      applyLogoAcrossApp();
+      loadFromStorage();
+      syncInputsFromState();
+      renderAll();
+    })();
+  </script>
+</body>
+
+</html>
