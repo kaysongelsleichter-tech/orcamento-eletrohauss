@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
@@ -24,14 +23,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- html2pdf.js para gerar arquivo PDF direto no navegador e compartilhar no WhatsApp -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous"
-    referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <!-- Google Fonts: Inter para interface limpa e legível -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
   <script>
     tailwind.config = {
@@ -59,15 +56,12 @@
 
   <style>
     /* Configurações base e suavização de toque mobile (Realme 12 5G: 360px–412px) */
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
 
-    html,
-    body {
+    html, body {
       max-width: 100%;
       overflow-x: hidden;
     }
@@ -105,7 +99,6 @@
       background: #e5e7eb;
       outline: none;
     }
-
     input[type="range"].hauss-range::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
@@ -117,7 +110,6 @@
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
     }
-
     input[type="range"].hauss-range::-moz-range-thumb {
       width: 26px;
       height: 26px;
@@ -132,7 +124,6 @@
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
-
     .no-scrollbar {
       -ms-overflow-style: none;
       scrollbar-width: none;
@@ -179,8 +170,7 @@
         margin: 0;
       }
 
-      html,
-      body {
+      html, body {
         background: #ffffff !important;
         padding: 0 !important;
         margin: 0 !important;
@@ -228,7 +218,6 @@
     }
   </style>
 </head>
-
 <body>
 
   <!-- Input oculto para selecionar imagem da Logo da galeria/arquivos -->
@@ -237,11 +226,9 @@
   <!-- =====================================================================
        CABEÇALHO SUPERIOR DO APLICATIVO (OCULTO NA IMPRESSÃO)
        ===================================================================== -->
-  <header
-    class="no-print sticky top-0 z-30 bg-[#8d9094] text-white shadow-md border-b-4 border-[#5a5a5a] overflow-hidden">
+  <header class="no-print sticky top-0 z-30 bg-[#8d9094] text-white shadow-md border-b-4 border-[#5a5a5a] overflow-hidden">
     <!-- Linhas diagonais sutis à direita remetendo ao PDF original -->
-    <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-45" viewBox="0 0 400 80"
-      preserveAspectRatio="none" aria-hidden="true">
+    <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-45" viewBox="0 0 400 80" preserveAspectRatio="none" aria-hidden="true">
       <g stroke="#ffffff" stroke-width="1.5">
         <line x1="215" y1="85" x2="300" y2="-5" />
         <line x1="230" y1="85" x2="315" y2="-5" />
@@ -256,26 +243,31 @@
     <div class="relative z-10 max-w-3xl mx-auto px-3 sm:px-4 py-2 flex items-center justify-between gap-2">
       <!-- Identidade Visual ELETRO HAUSS (Imagem enviada ou texto limpo sem desenho genérico) -->
       <div class="flex items-center gap-2 min-w-0">
-        <img id="app-header-logo-img" src="" alt="Eletro Hauss"
-          class="hidden h-10 w-auto max-w-[165px] object-contain" />
+        <img
+          id="app-header-logo-img"
+          src=""
+          alt="Eletro Hauss"
+          class="hidden h-10 w-auto max-w-[165px] object-contain"
+        />
         <div id="app-header-logo-text" class="leading-tight min-w-0">
-          <span class="block font-black text-base tracking-wide text-white uppercase truncate drop-shadow-xs">ELETRO
-            HAUSS</span>
+          <span class="block font-black text-base tracking-wide text-white uppercase truncate drop-shadow-xs">ELETRO HAUSS</span>
           <span class="block text-[11px] font-semibold text-gray-100 truncate">Instalações Elétricas</span>
         </div>
       </div>
 
-      <!-- Botões de Ação Rápida no Topo -->
+      <!-- Botão de Ação Rápida no Topo -->
       <div class="flex items-center gap-1.5 shrink-0">
-        <button id="btn-new-blank" type="button" title="Limpar e começar novo orçamento"
-          class="touch-btn px-3 rounded-xl bg-[#2b2e33]/90 hover:bg-[#1f2937] active:scale-95 text-xs font-bold text-white border border-white/25 transition flex items-center gap-1">
+        <button
+          id="btn-new-blank"
+          type="button"
+          title="Limpar e começar novo orçamento"
+          class="touch-btn px-3.5 rounded-xl bg-[#2b2e33]/90 hover:bg-[#1f2937] active:scale-95 text-xs font-bold text-white border border-white/25 transition flex items-center gap-1"
+        >
           <span>+ Novo</span>
         </button>
-
       </div>
     </div>
   </header>
-
 
 
   <!-- =====================================================================
@@ -292,12 +284,10 @@
       <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
         <div class="flex items-center justify-between mb-3">
           <h2 class="text-sm font-extrabold uppercase tracking-wider text-gray-700 flex items-center gap-2">
-            <span
-              class="w-6 h-6 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center text-xs font-black">1</span>
+            <span class="w-6 h-6 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center text-xs font-black">1</span>
             Dados do Cliente
           </h2>
-          <span id="draft-status"
-            class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">
+          <span id="draft-status" class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">
             ✓ Salvo automático
           </span>
         </div>
@@ -305,42 +295,69 @@
         <div class="space-y-3">
           <div>
             <label for="input-cliente" class="block text-xs font-bold text-gray-600 mb-1">Cliente *</label>
-            <input id="input-cliente" type="text" placeholder="Nome do cliente ou empresa"
-              class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+            <input
+              id="input-cliente"
+              type="text"
+              placeholder="Nome do cliente ou empresa"
+              class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition"
+            />
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label for="input-cpfcnpj" class="block text-xs font-bold text-gray-600 mb-1">CPF / CNPJ</label>
-              <input id="input-cpfcnpj" type="text" inputmode="numeric" placeholder="000.000.000-00" maxlength="18"
-                class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+              <input
+                id="input-cpfcnpj"
+                type="text"
+                inputmode="numeric"
+                placeholder="000.000.000-00"
+                maxlength="18"
+                class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition"
+              />
             </div>
 
             <div>
               <label for="input-data" class="block text-xs font-bold text-gray-600 mb-1">Data</label>
-              <input id="input-data" type="date"
-                class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+              <input
+                id="input-data"
+                type="date"
+                class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition"
+              />
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label for="input-telefone" class="block text-xs font-bold text-gray-600 mb-1">Telefone / WhatsApp</label>
-              <input id="input-telefone" type="tel" inputmode="tel" placeholder="(48) 99999-9999" maxlength="15"
-                class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+              <input
+                id="input-telefone"
+                type="tel"
+                inputmode="tel"
+                placeholder="(48) 99999-9999"
+                maxlength="15"
+                class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition"
+              />
             </div>
 
             <div>
               <label for="input-email" class="block text-xs font-bold text-gray-600 mb-1">E-mail</label>
-              <input id="input-email" type="email" placeholder="cliente@email.com"
-                class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+              <input
+                id="input-email"
+                type="email"
+                placeholder="cliente@email.com"
+                class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition"
+              />
             </div>
           </div>
 
           <div>
             <label for="input-endereco" class="block text-xs font-bold text-gray-600 mb-1">Endereço</label>
-            <input id="input-endereco" type="text" placeholder="Rua, número, bairro, cidade"
-              class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+            <input
+              id="input-endereco"
+              type="text"
+              placeholder="Rua, número, bairro, cidade"
+              class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition"
+            />
           </div>
 
         </div>
@@ -350,27 +367,35 @@
       <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
         <div class="flex items-center justify-between mb-3">
           <h2 class="text-sm font-extrabold uppercase tracking-wider text-gray-700 flex items-center gap-2">
-            <span
-              class="w-6 h-6 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-black">2</span>
+            <span class="w-6 h-6 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-black">2</span>
             Serviços e Materiais
           </h2>
-          <button type="button" onclick="switchTab('saved', 'catalog')"
-            class="touch-btn px-2 text-xs font-bold text-amber-700 hover:text-amber-800 underline">
+          <button
+            type="button"
+            onclick="switchTab('saved', 'catalog')"
+            class="touch-btn px-2 text-xs font-bold text-amber-700 hover:text-amber-800 underline"
+          >
             Editar atalhos
           </button>
         </div>
 
         <!-- CHAVE "TRABALHAR COM QUANTIDADES" -->
-        <label for="toggle-qtd"
-          class="mb-3.5 p-3 rounded-xl bg-amber-50/90 border border-amber-200 flex items-center justify-between gap-3 cursor-pointer min-h-[52px]">
+        <label
+          for="toggle-qtd"
+          class="mb-3.5 p-3 rounded-xl bg-amber-50/90 border border-amber-200 flex items-center justify-between gap-3 cursor-pointer min-h-[52px]"
+        >
           <div>
             <span class="block text-xs sm:text-sm font-extrabold text-amber-900">Trabalhar com Quantidades</span>
             <span id="toggle-qtd-hint" class="block text-[11px] text-amber-800/80">
               Ativado: exibe Qtd, Valor Unit. e Subtotal
             </span>
           </div>
-          <input id="toggle-qtd" type="checkbox" checked
-            class="w-6 h-6 rounded-lg accent-amber-600 cursor-pointer shrink-0" />
+          <input
+            id="toggle-qtd"
+            type="checkbox"
+            checked
+            class="w-6 h-6 rounded-lg accent-amber-600 cursor-pointer shrink-0"
+          />
         </label>
 
         <!-- Chips Horizontais de Adição em 1 Toque -->
@@ -382,10 +407,13 @@
         <!-- Formulário para Adicionar Item Personalizado -->
         <div class="bg-gray-50 rounded-2xl p-3.5 border border-gray-200/90 space-y-3">
           <div>
-            <label for="item-desc" class="block text-xs font-bold text-gray-600 mb-1">Descrição do Serviço ou
-              Material</label>
-            <input id="item-desc" type="text" placeholder="Ex: Mão de obra elétrica / Instalação"
-              class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+            <label for="item-desc" class="block text-xs font-bold text-gray-600 mb-1">Descrição do Serviço ou Material</label>
+            <input
+              id="item-desc"
+              type="text"
+              placeholder="Ex: Mão de obra elétrica / Instalação"
+              class="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition"
+            />
           </div>
 
           <div id="item-inputs-grid" class="grid grid-cols-2 gap-3">
@@ -393,16 +421,29 @@
             <div id="form-qty-wrapper">
               <label for="item-qty" class="block text-xs font-bold text-gray-600 mb-1">Quantidade</label>
               <div class="flex items-center rounded-xl border border-gray-300 bg-white overflow-hidden">
-                <button id="btn-qty-minus" type="button"
+                <button
+                  id="btn-qty-minus"
+                  type="button"
                   class="w-11 h-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-800 font-extrabold text-xl transition shrink-0"
-                  aria-label="Diminuir quantidade">
+                  aria-label="Diminuir quantidade"
+                >
                   −
                 </button>
-                <input id="item-qty" type="number" inputmode="decimal" step="any" min="0.01" value="1"
-                  class="w-full text-center font-bold text-gray-900 focus:outline-none bg-white" />
-                <button id="btn-qty-plus" type="button"
+                <input
+                  id="item-qty"
+                  type="number"
+                  inputmode="decimal"
+                  step="any"
+                  min="0.01"
+                  value="1"
+                  class="w-full text-center font-bold text-gray-900 focus:outline-none bg-white"
+                />
+                <button
+                  id="btn-qty-plus"
+                  type="button"
                   class="w-11 h-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-800 font-extrabold text-xl transition shrink-0"
-                  aria-label="Aumentar quantidade">
+                  aria-label="Aumentar quantidade"
+                >
                   +
                 </button>
               </div>
@@ -410,26 +451,32 @@
 
             <!-- Valor Unitário / Valor Fechado -->
             <div id="form-price-wrapper">
-              <label id="item-price-label" for="item-price" class="block text-xs font-bold text-gray-600 mb-1">Valor
-                Unitário (R$)</label>
+              <label id="item-price-label" for="item-price" class="block text-xs font-bold text-gray-600 mb-1">Valor Unitário (R$)</label>
               <div class="relative">
                 <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">R$</span>
-                <input id="item-price" type="text" inputmode="decimal" value="0,00"
-                  class="w-full h-12 rounded-xl border border-gray-300 bg-white pl-10 pr-3.5 text-right font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition" />
+                <input
+                  id="item-price"
+                  type="text"
+                  inputmode="decimal"
+                  value="0,00"
+                  class="w-full h-12 rounded-xl border border-gray-300 bg-white pl-10 pr-3.5 text-right font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition"
+                />
               </div>
             </div>
           </div>
 
           <label class="flex items-center gap-2.5 text-xs text-gray-600 cursor-pointer min-h-[36px]">
-            <input id="item-save-catalog" type="checkbox"
-              class="w-5 h-5 rounded text-amber-500 focus:ring-amber-500 border-gray-300" />
+            <input id="item-save-catalog" type="checkbox" class="w-5 h-5 rounded text-amber-500 focus:ring-amber-500 border-gray-300" />
             <span>Salvar este item nos meus atalhos rápidos</span>
           </label>
 
-          <button id="btn-add-item" type="button"
-            class="touch-btn w-full py-3 px-4 rounded-xl bg-hauss-amber hover:bg-hauss-amberDark active:scale-[0.99] text-gray-900 font-extrabold text-sm sm:text-base shadow-sm transition flex items-center justify-center gap-2">
+          <button
+            id="btn-add-item"
+            type="button"
+            class="touch-btn w-full py-3 px-4 rounded-xl bg-hauss-amber hover:bg-hauss-amberDark active:scale-[0.99] text-gray-900 font-extrabold text-sm sm:text-base shadow-sm transition flex items-center justify-center gap-2"
+          >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
             </svg>
             <span id="btn-add-item-text">Adicionar ao Orçamento</span>
           </button>
@@ -441,8 +488,11 @@
             <h3 class="text-xs font-extrabold uppercase tracking-wider text-gray-500">
               Itens no Orçamento (<span id="items-count">0</span>)
             </h3>
-            <button id="btn-clear-items" type="button"
-              class="hidden touch-btn px-2 text-xs font-bold text-red-600 hover:text-red-700">
+            <button
+              id="btn-clear-items"
+              type="button"
+              class="hidden touch-btn px-2 text-xs font-bold text-red-600 hover:text-red-700"
+            >
               Limpar itens
             </button>
           </div>
@@ -457,33 +507,35 @@
           Observações / Validade / Forma de Pagamento (Opcional)
         </label>
         <div class="flex flex-wrap gap-1.5 mb-2.5">
-          <button type="button" data-note="Validade: 10 dias | PIX ou Dinheiro."
-            class="note-chip touch-btn px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-semibold text-gray-700 transition">
+          <button type="button" data-note="Validade: 10 dias | PIX ou Dinheiro." class="note-chip touch-btn px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-semibold text-gray-700 transition">
             + Validade 10 dias | PIX
           </button>
-          <button type="button" data-note="Material por conta do cliente (somente mão de obra)."
-            class="note-chip touch-btn px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-semibold text-gray-700 transition">
+          <button type="button" data-note="Material por conta do cliente (somente mão de obra)." class="note-chip touch-btn px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-semibold text-gray-700 transition">
             + Só mão de obra
           </button>
-          <button type="button" data-note="Material incluso conforme descrição acima."
-            class="note-chip touch-btn px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-semibold text-gray-700 transition">
+          <button type="button" data-note="Material incluso conforme descrição acima." class="note-chip touch-btn px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-semibold text-gray-700 transition">
             + Material incluso
           </button>
         </div>
-        <textarea id="input-notes" rows="2"
+        <textarea
+          id="input-notes"
+          rows="2"
           placeholder="Ex: Validade: 10 dias | PIX ou Dinheiro. Garantia de serviço..."
-          class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition"></textarea>
+          class="w-full rounded-xl border border-gray-300 bg-gray-50 focus:bg-white px-3.5 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-hauss-amber transition"
+        ></textarea>
       </div>
 
       <!-- CARTÃO 4: TOTAL GERAL EM DESTAQUE NA ABA ORÇAMENTO -->
       <div class="bg-gray-900 text-white rounded-2xl p-4 shadow-md flex items-center justify-between gap-3">
         <div>
-          <span class="block text-[11px] font-bold uppercase tracking-wider text-gray-400">Total Geral do
-            Orçamento</span>
+          <span class="block text-[11px] font-bold uppercase tracking-wider text-gray-400">Total Geral do Orçamento</span>
           <span id="editor-card-total" class="block text-2xl font-black text-hauss-amber mt-0.5">R$ 0,00</span>
         </div>
-        <button type="button" onclick="switchTab('preview')"
-          class="touch-btn px-4 rounded-xl bg-white text-gray-900 font-extrabold text-xs sm:text-sm hover:bg-gray-100 active:scale-95 transition shrink-0">
+        <button
+          type="button"
+          onclick="switchTab('preview')"
+          class="touch-btn px-4 rounded-xl bg-white text-gray-900 font-extrabold text-xs sm:text-sm hover:bg-gray-100 active:scale-95 transition shrink-0"
+        >
           Ver Folha PDF →
         </button>
       </div>
@@ -502,44 +554,53 @@
             <h2 class="text-sm font-extrabold text-gray-800">Pré-visualização da Folha A4</h2>
             <p class="text-xs text-gray-500">Salve em PDF para enviar o arquivo ou mande resumido no WhatsApp.</p>
           </div>
-          <button type="button" onclick="switchTab('logo')"
-            class="touch-btn px-3 rounded-xl bg-amber-50 border border-amber-200 hover:bg-amber-100 text-xs font-extrabold text-amber-900 transition">
+          <button
+            type="button"
+            onclick="switchTab('logo')"
+            class="touch-btn px-3 rounded-xl bg-amber-50 border border-amber-200 hover:bg-amber-100 text-xs font-extrabold text-amber-900 transition"
+          >
             🖼️ Ajustar Logo
           </button>
         </div>
 
         <!-- Interruptor "Ocultar campos em branco no PDF" -->
-        <label for="toggle-hide-empty"
-          class="p-2.5 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-between gap-2 cursor-pointer min-h-[46px]">
-          <span class="text-xs font-bold text-gray-700">Ocultar campos em branco no PDF (CPF, Endereço, E-mail
-            vazios)</span>
-          <input id="toggle-hide-empty" type="checkbox" checked
-            class="w-5 h-5 rounded accent-gray-700 cursor-pointer shrink-0" />
+        <label
+          for="toggle-hide-empty"
+          class="p-2.5 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-between gap-2 cursor-pointer min-h-[46px]"
+        >
+          <span class="text-xs font-bold text-gray-700">Ocultar campos em branco no PDF (CPF, Endereço, E-mail vazios)</span>
+          <input id="toggle-hide-empty" type="checkbox" checked class="w-5 h-5 rounded accent-gray-700 cursor-pointer shrink-0" />
         </label>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <button id="btn-preview-whatsapp" type="button"
-            class="touch-btn py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold text-sm shadow-sm transition flex items-center justify-center gap-2">
+          <button
+            id="btn-preview-whatsapp"
+            type="button"
+            class="touch-btn py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold text-sm shadow-sm transition flex items-center justify-center gap-2"
+          >
             <svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z" />
+              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z"/>
             </svg>
             <span id="btn-preview-whatsapp-text">Compartilhar PDF no WhatsApp</span>
           </button>
 
-          <button id="btn-print-pdf" type="button"
-            class="touch-btn py-3 px-4 rounded-xl bg-hauss-dark hover:bg-gray-800 active:scale-[0.99] text-white font-extrabold text-sm shadow-sm transition flex items-center justify-center gap-2">
-            <svg class="w-5 h-5 text-hauss-amber shrink-0" fill="none" stroke="currentColor" stroke-width="2.2"
-              viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          <button
+            id="btn-print-pdf"
+            type="button"
+            class="touch-btn py-3 px-4 rounded-xl bg-hauss-dark hover:bg-gray-800 active:scale-[0.99] text-white font-extrabold text-sm shadow-sm transition flex items-center justify-center gap-2"
+          >
+            <svg class="w-5 h-5 text-hauss-amber shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
             </svg>
             <span>Salvar PDF / Imprimir</span>
           </button>
         </div>
 
-        <button id="btn-preview-whatsapp-text-only" type="button"
-          class="touch-btn w-full py-2 px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs transition flex items-center justify-center gap-1.5">
+        <button
+          id="btn-preview-whatsapp-text-only"
+          type="button"
+          class="touch-btn w-full py-2 px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs transition flex items-center justify-center gap-1.5"
+        >
           <span>💬 Enviar apenas resumo em texto no WhatsApp</span>
         </button>
       </div>
@@ -555,8 +616,12 @@
             <div>
               <!-- 1. FAIXA SUPERIOR CINZA (#8d9094) COM AS 13 LINHAS DIAGONAIS BRANCAS À DIREITA -->
               <div class="relative w-full min-h-[144px] bg-[#8d9094] overflow-hidden flex items-center px-10 py-4">
-                <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 794 144"
-                  preserveAspectRatio="none" aria-hidden="true">
+                <svg
+                  class="absolute inset-0 w-full h-full pointer-events-none"
+                  viewBox="0 0 794 144"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
                   <g stroke="#ffffff" stroke-opacity="0.72" stroke-width="1.8">
                     <line x1="250" y1="146" x2="396" y2="-2" />
                     <line x1="274" y1="146" x2="420" y2="-2" />
@@ -575,29 +640,34 @@
                 </svg>
 
                 <!-- Logo posicionada SOBRE a faixa cinza (quando selecionado na aba Logo) -->
-                <img id="doc-logo-img-banner" src="" alt="Eletro Hauss" style="height: 80px;"
-                  class="hidden relative z-10 w-auto max-w-[380px] object-contain" />
+                <img
+                  id="doc-logo-img-banner"
+                  src=""
+                  alt="Eletro Hauss"
+                  style="height: 80px;"
+                  class="hidden relative z-10 w-auto max-w-[380px] object-contain"
+                />
               </div>
 
               <!-- 2. BLOCO DA LOGO (QUANDO ABAIXO DA FAIXA CINZA) + ORÇAMENTO + CONTATO -->
               <div class="px-10 pt-5 pb-4 bg-white flex items-start justify-between gap-6 border-b border-gray-300">
                 <!-- Coluna Esquerda: Logo abaixo da faixa cinza OU texto limpo ELETRO HAUSS + ORÇAMENTO -->
                 <div>
-                  <img id="doc-logo-img-below" src="" alt="Eletro Hauss" style="height: 80px;"
-                    class="hidden w-auto max-w-[380px] object-contain mb-2" />
+                  <img
+                    id="doc-logo-img-below"
+                    src=""
+                    alt="Eletro Hauss"
+                    style="height: 80px;"
+                    class="hidden w-auto max-w-[380px] object-contain mb-2"
+                  />
 
-                  <h1 id="doc-logo-fallback-text"
-                    class="text-[28px] font-black tracking-[0.04em] text-[#2b2e33] uppercase leading-none">
+                  <h1 id="doc-logo-fallback-text" class="text-[28px] font-black tracking-[0.04em] text-[#2b2e33] uppercase leading-none">
                     ELETRO HAUSS
                   </h1>
 
-                  <div class="mt-2.5 flex items-center gap-3">
+                  <div class="mt-2.5">
                     <span class="text-[19px] font-bold tracking-[0.14em] text-[#374151] uppercase">
                       ORÇAMENTO
-                    </span>
-                    <span id="doc-number-display"
-                      class="text-xs font-bold px-2.5 py-0.5 rounded bg-gray-100 text-gray-600 border border-gray-300">
-                      Nº 001
                     </span>
                   </div>
                 </div>
@@ -661,24 +731,21 @@
                       <th id="doc-th-total" class="py-2.5 px-3.5 border border-[#5a5a5a] text-right w-36">TOTAL</th>
                     </tr>
                   </thead>
-                  <tbody id="doc-items-tbody"
-                    class="text-[13px] text-gray-800 divide-y divide-gray-300 border-b border-gray-300">
+                  <tbody id="doc-items-tbody" class="text-[13px] text-gray-800 divide-y divide-gray-300 border-b border-gray-300">
                     <!-- Linhas preenchidas dinamicamente -->
                   </tbody>
                 </table>
 
                 <!-- Bloco de Total Geral -->
                 <div class="mt-4 flex justify-end">
-                  <div
-                    class="w-72 bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 flex items-center justify-between">
+                  <div class="w-72 bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 flex items-center justify-between">
                     <span class="text-xs font-extrabold uppercase tracking-wider text-gray-700">TOTAL GERAL:</span>
                     <span id="doc-total" class="text-lg font-extrabold text-gray-900">R$ 0,00</span>
                   </div>
                 </div>
 
                 <!-- Observações no Documento (se preenchido) -->
-                <div id="doc-notes-box"
-                  class="hidden mt-5 p-3.5 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-700">
+                <div id="doc-notes-box" class="hidden mt-5 p-3.5 rounded-lg bg-gray-50 border border-gray-200 text-xs text-gray-700">
                   <p class="font-bold uppercase text-gray-600 mb-1">Observações / Condições:</p>
                   <p id="doc-notes-text" class="whitespace-pre-line leading-relaxed"></p>
                 </div>
@@ -705,19 +772,20 @@
               Envie o arquivo original da logo (PNG transparente, JPG, WEBP ou SVG). Ela fica salva offline no aparelho.
             </p>
           </div>
-          <span id="logo-status-badge"
-            class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 shrink-0">
+          <span id="logo-status-badge" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 shrink-0">
             Sem imagem
           </span>
         </div>
 
         <!-- Área Grande de Toque para Selecionar da Galeria -->
-        <button type="button" onclick="document.getElementById('logo-file-input').click()"
-          class="w-full min-h-[112px] p-4 rounded-2xl border-2 border-dashed border-amber-400 bg-amber-50/70 hover:bg-amber-100/70 active:scale-[0.99] transition flex flex-col items-center justify-center text-center gap-2">
+        <button
+          type="button"
+          onclick="document.getElementById('logo-file-input').click()"
+          class="w-full min-h-[112px] p-4 rounded-2xl border-2 border-dashed border-amber-400 bg-amber-50/70 hover:bg-amber-100/70 active:scale-[0.99] transition flex flex-col items-center justify-center text-center gap-2"
+        >
           <div class="w-12 h-12 rounded-2xl bg-hauss-dark text-hauss-amber flex items-center justify-center shadow-sm">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
             </svg>
           </div>
           <div>
@@ -739,15 +807,29 @@
               </span>
             </div>
             <div class="flex items-center gap-2.5">
-              <button id="btn-logo-size-minus" type="button"
+              <button
+                id="btn-logo-size-minus"
+                type="button"
                 class="touch-btn w-12 rounded-xl bg-gray-100 hover:bg-gray-200 font-extrabold text-lg text-gray-800 shrink-0"
-                aria-label="Diminuir logo">
+                aria-label="Diminuir logo"
+              >
                 −
               </button>
-              <input id="logo-height-slider" type="range" min="40" max="160" step="2" value="80" class="hauss-range" />
-              <button id="btn-logo-size-plus" type="button"
+              <input
+                id="logo-height-slider"
+                type="range"
+                min="40"
+                max="160"
+                step="2"
+                value="80"
+                class="hauss-range"
+              />
+              <button
+                id="btn-logo-size-plus"
+                type="button"
                 class="touch-btn w-12 rounded-xl bg-gray-100 hover:bg-gray-200 font-extrabold text-lg text-gray-800 shrink-0"
-                aria-label="Aumentar logo">
+                aria-label="Aumentar logo"
+              >
                 +
               </button>
             </div>
@@ -759,12 +841,20 @@
               Posição no Cabeçalho do PDF
             </span>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <button id="btn-pos-banner" type="button" class="touch-btn p-3 rounded-xl border-2 text-left transition">
+              <button
+                id="btn-pos-banner"
+                type="button"
+                class="touch-btn p-3 rounded-xl border-2 text-left transition"
+              >
                 <span class="block text-xs font-extrabold">Sobre a faixa cinza</span>
                 <span class="block text-[11px] opacity-80 mt-0.5">Ideal para PNG transparente ou branco</span>
               </button>
 
-              <button id="btn-pos-below" type="button" class="touch-btn p-3 rounded-xl border-2 text-left transition">
+              <button
+                id="btn-pos-below"
+                type="button"
+                class="touch-btn p-3 rounded-xl border-2 text-left transition"
+              >
                 <span class="block text-xs font-extrabold">Abaixo da faixa cinza</span>
                 <span class="block text-[11px] opacity-80 mt-0.5">Fundo branco, ideal para logo escura</span>
               </button>
@@ -772,16 +862,20 @@
           </div>
 
           <!-- 3. Usar também como ícone do App na tela inicial -->
-          <label for="toggle-logo-pwa-icon"
-            class="p-3 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-between gap-3 cursor-pointer min-h-[52px]">
+          <label
+            for="toggle-logo-pwa-icon"
+            class="p-3 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-between gap-3 cursor-pointer min-h-[52px]"
+          >
             <div>
-              <span class="block text-xs sm:text-sm font-extrabold text-gray-800">Usar também como ícone do App na tela
-                inicial</span>
-              <span class="block text-[11px] text-gray-500">Atualiza o ícone exibido ao instalar o aplicativo no
-                celular</span>
+              <span class="block text-xs sm:text-sm font-extrabold text-gray-800">Usar também como ícone do App na tela inicial</span>
+              <span class="block text-[11px] text-gray-500">Atualiza o ícone exibido ao instalar o aplicativo no celular</span>
             </div>
-            <input id="toggle-logo-pwa-icon" type="checkbox" checked
-              class="w-6 h-6 rounded-lg accent-gray-800 cursor-pointer shrink-0" />
+            <input
+              id="toggle-logo-pwa-icon"
+              type="checkbox"
+              checked
+              class="w-6 h-6 rounded-lg accent-gray-800 cursor-pointer shrink-0"
+            />
           </label>
         </div>
 
@@ -794,8 +888,7 @@
           <div class="rounded-2xl overflow-hidden border border-gray-300 shadow-xs bg-white">
             <!-- Faixa cinza com linhas diagonais -->
             <div class="relative w-full min-h-[96px] bg-[#8d9094] overflow-hidden flex items-center px-5 py-3">
-              <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 100"
-                preserveAspectRatio="none" aria-hidden="true">
+              <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true">
                 <g stroke="#ffffff" stroke-opacity="0.72" stroke-width="1.4">
                   <line x1="145" y1="102" x2="235" y2="-2" />
                   <line x1="160" y1="102" x2="250" y2="-2" />
@@ -810,15 +903,25 @@
                   <line x1="295" y1="102" x2="385" y2="-2" />
                 </g>
               </svg>
-              <img id="live-logo-preview-banner" src="" alt="Prévia da logo na faixa cinza" style="height: 64px;"
-                class="hidden relative z-10 w-auto max-w-[230px] object-contain" />
+              <img
+                id="live-logo-preview-banner"
+                src=""
+                alt="Prévia da logo na faixa cinza"
+                style="height: 64px;"
+                class="hidden relative z-10 w-auto max-w-[230px] object-contain"
+              />
             </div>
 
             <!-- Bloco inferior branco do cabeçalho -->
             <div class="px-5 py-3.5 bg-white flex items-start justify-between gap-3">
               <div>
-                <img id="live-logo-preview-below" src="" alt="Prévia da logo no fundo branco" style="height: 64px;"
-                  class="hidden w-auto max-w-[230px] object-contain mb-1.5" />
+                <img
+                  id="live-logo-preview-below"
+                  src=""
+                  alt="Prévia da logo no fundo branco"
+                  style="height: 64px;"
+                  class="hidden w-auto max-w-[230px] object-contain mb-1.5"
+                />
                 <p id="live-logo-preview-text" class="text-lg font-black text-[#2b2e33] uppercase leading-none">
                   ELETRO HAUSS
                 </p>
@@ -835,8 +938,11 @@
         </div>
 
         <!-- Botão Remover Logo -->
-        <button id="btn-remove-logo" type="button"
-          class="hidden touch-btn w-full py-3 px-4 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-extrabold text-sm transition flex items-center justify-center gap-2">
+        <button
+          id="btn-remove-logo"
+          type="button"
+          class="hidden touch-btn w-full py-3 px-4 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-extrabold text-sm transition flex items-center justify-center gap-2"
+        >
           <span>🗑️ Remover Logo</span>
         </button>
       </div>
@@ -850,26 +956,39 @@
 
       <!-- Sub-navegação entre Histórico e Atalhos/Backup -->
       <div class="bg-white p-1.5 rounded-2xl shadow-sm border border-gray-200 grid grid-cols-2 gap-1.5">
-        <button id="subtab-history-btn" type="button"
-          class="touch-btn px-3 rounded-xl text-xs sm:text-sm font-bold bg-hauss-dark text-white transition">
+        <button
+          id="subtab-history-btn"
+          type="button"
+          class="touch-btn px-3 rounded-xl text-xs sm:text-sm font-bold bg-hauss-dark text-white transition"
+        >
           Orçamentos (<span id="saved-count-badge">0</span>)
         </button>
-        <button id="subtab-catalog-btn" type="button"
-          class="touch-btn px-3 rounded-xl text-xs sm:text-sm font-bold text-gray-600 hover:bg-gray-100 transition">
+        <button
+          id="subtab-catalog-btn"
+          type="button"
+          class="touch-btn px-3 rounded-xl text-xs sm:text-sm font-bold text-gray-600 hover:bg-gray-100 transition"
+        >
           Atalhos & Backup (<span id="catalog-count-badge">0</span>)
         </button>
       </div>
 
       <!-- PAINEL 1: HISTÓRICO DE ORÇAMENTOS SALVOS -->
       <div id="panel-history" class="space-y-3">
-        <button id="btn-save-history-top" type="button"
-          class="touch-btn w-full py-3 px-4 rounded-2xl bg-hauss-amber hover:bg-hauss-amberDark text-gray-900 font-extrabold text-sm shadow-xs transition flex items-center justify-center gap-2">
+        <button
+          id="btn-save-history-top"
+          type="button"
+          class="touch-btn w-full py-3 px-4 rounded-2xl bg-hauss-amber hover:bg-hauss-amberDark text-gray-900 font-extrabold text-sm shadow-xs transition flex items-center justify-center gap-2"
+        >
           <span>💾 Salvar Orçamento Atual no Histórico</span>
         </button>
 
         <div class="bg-white rounded-2xl p-3 border border-gray-200 shadow-sm">
-          <input id="search-saved" type="search" placeholder="Buscar orçamento por nome do cliente..."
-            class="w-full rounded-xl bg-gray-50 border border-gray-200 px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-hauss-amber" />
+          <input
+            id="search-saved"
+            type="search"
+            placeholder="Buscar orçamento por nome do cliente..."
+            class="w-full rounded-xl bg-gray-50 border border-gray-200 px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-hauss-amber"
+          />
         </div>
 
         <div id="saved-quotes-list" class="space-y-2.5"></div>
@@ -882,27 +1001,41 @@
         <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3">
           <div>
             <h3 id="catalog-form-title" class="text-sm font-extrabold text-gray-800">Adicionar Novo Atalho Rápido</h3>
-            <p class="text-xs text-gray-500">Cadastre ou edite serviços e materiais frequentes para lançar com 1 toque.
-            </p>
+            <p class="text-xs text-gray-500">Cadastre ou edite serviços e materiais frequentes para lançar com 1 toque.</p>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-            <input id="cat-new-desc" type="text" placeholder="Nome do serviço/material"
-              class="sm:col-span-2 rounded-xl border border-gray-300 bg-gray-50 px-3.5 py-2.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-hauss-amber" />
+            <input
+              id="cat-new-desc"
+              type="text"
+              placeholder="Nome do serviço/material"
+              class="sm:col-span-2 rounded-xl border border-gray-300 bg-gray-50 px-3.5 py-2.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-hauss-amber"
+            />
             <div class="relative">
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">R$</span>
-              <input id="cat-new-price" type="text" inputmode="decimal" value="0,00"
-                class="w-full rounded-xl border border-gray-300 bg-gray-50 pl-9 pr-3 py-2.5 text-right font-bold focus:bg-white focus:outline-none focus:ring-2 focus:ring-hauss-amber" />
+              <input
+                id="cat-new-price"
+                type="text"
+                inputmode="decimal"
+                value="0,00"
+                class="w-full rounded-xl border border-gray-300 bg-gray-50 pl-9 pr-3 py-2.5 text-right font-bold focus:bg-white focus:outline-none focus:ring-2 focus:ring-hauss-amber"
+              />
             </div>
           </div>
 
           <div class="flex gap-2">
-            <button id="btn-add-catalog" type="button"
-              class="touch-btn flex-1 py-2.5 px-4 rounded-xl bg-hauss-amber hover:bg-hauss-amberDark text-gray-900 font-extrabold text-xs sm:text-sm transition">
+            <button
+              id="btn-add-catalog"
+              type="button"
+              class="touch-btn flex-1 py-2.5 px-4 rounded-xl bg-hauss-amber hover:bg-hauss-amberDark text-gray-900 font-extrabold text-xs sm:text-sm transition"
+            >
               + Salvar nos Atalhos Rápidos
             </button>
-            <button id="btn-cancel-edit-catalog" type="button"
-              class="hidden touch-btn px-3.5 rounded-xl bg-gray-200 text-gray-700 font-bold text-xs">
+            <button
+              id="btn-cancel-edit-catalog"
+              type="button"
+              class="hidden touch-btn px-3.5 rounded-xl bg-gray-200 text-gray-700 font-bold text-xs"
+            >
               Cancelar
             </button>
           </div>
@@ -914,23 +1047,31 @@
         <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-2.5">
           <div>
             <h3 class="text-sm font-extrabold text-gray-800">Backup e Restauração</h3>
-            <p class="text-xs text-gray-500">Salve uma cópia dos seus orçamentos e atalhos ou restaure quando precisar.
-            </p>
+            <p class="text-xs text-gray-500">Salve uma cópia dos seus orçamentos e atalhos ou restaure quando precisar.</p>
           </div>
           <div class="grid grid-cols-2 gap-2">
-            <button id="btn-export-backup" type="button"
-              class="touch-btn py-2.5 px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs transition">
+            <button
+              id="btn-export-backup"
+              type="button"
+              class="touch-btn py-2.5 px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs transition"
+            >
               ⬇️ Exportar Backup
             </button>
-            <button type="button" onclick="document.getElementById('backup-file-input').click()"
-              class="touch-btn py-2.5 px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs transition">
+            <button
+              type="button"
+              onclick="document.getElementById('backup-file-input').click()"
+              class="touch-btn py-2.5 px-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs transition"
+            >
               ⬆️ Restaurar Backup
             </button>
             <input id="backup-file-input" type="file" accept=".json,application/json" class="hidden" />
           </div>
 
-          <button id="btn-wipe-all-data" type="button"
-            class="touch-btn w-full py-2.5 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs transition">
+          <button
+            id="btn-wipe-all-data"
+            type="button"
+            class="touch-btn w-full py-2.5 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs transition"
+          >
             🗑️ Limpar Histórico de Orçamentos Salvos
           </button>
         </div>
@@ -944,12 +1085,10 @@
   <!-- =====================================================================
        DOCK INFERIOR FIXO: BARRA DE AÇÃO RÁPIDA + 4 ABAS DE NAVEGAÇÃO
        ===================================================================== -->
-  <footer
-    class="no-print fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-6px_24px_rgba(0,0,0,0.10)] safe-bottom-dock">
+  <footer class="no-print fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-6px_24px_rgba(0,0,0,0.10)] safe-bottom-dock">
     <div class="max-w-3xl mx-auto">
       <!-- Barra de Ação Rápida Flutuante (Exibida nas telas Orçamento e Ver PDF) -->
-      <div id="quick-action-bar"
-        class="px-2.5 sm:px-4 py-2 flex items-center justify-between gap-1.5 border-b border-gray-100">
+      <div id="quick-action-bar" class="px-2.5 sm:px-4 py-2 flex items-center justify-between gap-1.5 border-b border-gray-100">
         <div class="min-w-0 pr-1">
           <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400">Total</span>
           <span id="sticky-total" class="block text-sm sm:text-lg font-black text-gray-900 truncate">
@@ -958,23 +1097,31 @@
         </div>
 
         <div class="flex items-center gap-1.5 shrink-0">
-          <button id="btn-footer-save" type="button"
-            class="touch-btn px-2.5 sm:px-3 rounded-xl bg-gray-100 hover:bg-gray-200 active:scale-95 text-gray-800 font-extrabold text-xs transition flex items-center gap-1">
+          <button
+            id="btn-footer-save"
+            type="button"
+            class="touch-btn px-2.5 sm:px-3 rounded-xl bg-gray-100 hover:bg-gray-200 active:scale-95 text-gray-800 font-extrabold text-xs transition flex items-center gap-1"
+          >
             <span>💾</span>
             <span>Salvar</span>
           </button>
 
-          <button id="btn-footer-whatsapp" type="button"
-            class="touch-btn px-2.5 sm:px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold text-xs shadow-xs transition flex items-center gap-1">
+          <button
+            id="btn-footer-whatsapp"
+            type="button"
+            class="touch-btn px-2.5 sm:px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold text-xs shadow-xs transition flex items-center gap-1"
+          >
             <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z" />
+              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z"/>
             </svg>
             <span id="btn-footer-whatsapp-text">PDF no Zap</span>
           </button>
 
-          <button id="btn-footer-pdf" type="button"
-            class="touch-btn px-2.5 sm:px-3.5 rounded-xl bg-hauss-dark hover:bg-gray-800 active:scale-95 text-white font-extrabold text-xs shadow-xs transition flex items-center gap-1">
+          <button
+            id="btn-footer-pdf"
+            type="button"
+            class="touch-btn px-2.5 sm:px-3.5 rounded-xl bg-hauss-dark hover:bg-gray-800 active:scale-95 text-white font-extrabold text-xs shadow-xs transition flex items-center gap-1"
+          >
             <span>📄</span>
             <span>Gerar PDF</span>
           </button>
@@ -983,26 +1130,38 @@
 
       <!-- Navegação Inferior Fixa com 4 Abas Dimensionadas para 360px -->
       <nav class="px-1.5 py-1.5 grid grid-cols-4 gap-1 bg-gray-50">
-        <button type="button" data-tab="editor"
-          class="tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-extrabold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition bg-hauss-dark text-white shadow-xs">
+        <button
+          type="button"
+          data-tab="editor"
+          class="tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-extrabold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition bg-hauss-dark text-white shadow-xs"
+        >
           <span class="text-sm leading-none">✏️</span>
           <span class="truncate max-w-full">Orçamento</span>
         </button>
 
-        <button type="button" data-tab="preview"
-          class="tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-bold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition text-gray-600 hover:bg-gray-200/70">
+        <button
+          type="button"
+          data-tab="preview"
+          class="tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-bold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition text-gray-600 hover:bg-gray-200/70"
+        >
           <span class="text-sm leading-none">📄</span>
           <span class="truncate max-w-full">Ver PDF</span>
         </button>
 
-        <button type="button" data-tab="logo"
-          class="tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-bold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition text-gray-600 hover:bg-gray-200/70">
+        <button
+          type="button"
+          data-tab="logo"
+          class="tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-bold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition text-gray-600 hover:bg-gray-200/70"
+        >
           <span class="text-sm leading-none">🖼️</span>
           <span class="truncate max-w-full">Logo</span>
         </button>
 
-        <button type="button" data-tab="saved"
-          class="tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-bold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition text-gray-600 hover:bg-gray-200/70">
+        <button
+          type="button"
+          data-tab="saved"
+          class="tab-btn touch-btn px-1 rounded-xl text-[11px] sm:text-xs font-bold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 transition text-gray-600 hover:bg-gray-200/70"
+        >
           <span class="text-sm leading-none">📁</span>
           <span class="truncate max-w-full">Salvos</span>
         </button>
@@ -1011,92 +1170,17 @@
   </footer>
 
   <!-- =====================================================================
-       MODAL DE INSTALAÇÃO PWA NO CELULAR (ANDROID & IPHONE)
-       ===================================================================== -->
-  <div id="install-modal"
-    class="no-print hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3">
-    <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl space-y-4 animate-[fadeIn_0.15s_ease-out]">
-      <div class="flex items-start justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div
-            class="w-12 h-12 rounded-2xl bg-hauss-dark text-hauss-amber flex items-center justify-center shadow-md shrink-0">
-            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-base font-extrabold text-gray-900">Instalar Eletro Hauss</h3>
-            <p class="text-xs text-gray-500">Abra direto da tela inicial, sem barra de navegador</p>
-          </div>
-        </div>
-        <button id="btn-close-install-modal" type="button"
-          class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 font-bold">
-          ✕
-        </button>
-      </div>
-
-      <!-- Botão Nativo (Aparece automaticamente se o Chrome disparar beforeinstallprompt) -->
-      <div id="native-install-box"
-        class="hidden p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-center space-y-2">
-        <p class="text-xs font-semibold text-amber-900">Seu navegador permite instalação direta com 1 toque!</p>
-        <button id="btn-trigger-native-install" type="button"
-          class="w-full py-3 rounded-xl bg-hauss-amber hover:bg-hauss-amberDark text-gray-900 font-extrabold text-sm shadow-sm">
-          ⚡ Instalar Aplicativo Agora
-        </button>
-      </div>
-
-      <!-- Instruções Passo a Passo -->
-      <div class="space-y-3 text-xs text-gray-700">
-        <div class="p-3.5 rounded-2xl bg-gray-50 border border-gray-200 space-y-1.5">
-          <p class="font-extrabold text-gray-900 flex items-center gap-1.5">
-            <span>🤖</span> No Android (Google Chrome):
-          </p>
-          <ol class="list-decimal list-inside space-y-1 text-gray-600">
-            <li>Toque nos <strong>3 pontinhos (⋮)</strong> no canto superior direito do Chrome.</li>
-            <li>Toque em <strong>"Instalar aplicativo"</strong> ou <strong>"Adicionar à tela inicial"</strong>.</li>
-            <li>Confirme em <strong>Instalar</strong>. O ícone aparecerá junto aos seus apps!</li>
-          </ol>
-        </div>
-
-        <div class="p-3.5 rounded-2xl bg-gray-50 border border-gray-200 space-y-1.5">
-          <p class="font-extrabold text-gray-900 flex items-center gap-1.5">
-            <span>🍎</span> No iPhone (Safari):
-          </p>
-          <ol class="list-decimal list-inside space-y-1 text-gray-600">
-            <li>Toque no ícone <strong>Compartilhar</strong> (quadrado com seta para cima) na barra inferior.</li>
-            <li>Role para baixo e toque em <strong>"Adicionar à Tela de Início"</strong>.</li>
-            <li>Toque em <strong>Adicionar</strong> no canto superior direito.</li>
-          </ol>
-        </div>
-
-        <p class="text-[11px] text-gray-500 bg-blue-50/70 border border-blue-100 rounded-xl p-2.5">
-          <strong>Dica:</strong> Para que o botão de instalação apareça no celular, abra este arquivo hospedado em um
-          link <strong>HTTPS</strong> (como Netlify Drop, Vercel ou GitHub Pages).
-        </p>
-      </div>
-
-      <button id="btn-ok-install-modal" type="button"
-        class="w-full py-3 rounded-xl bg-hauss-dark text-white font-bold text-sm">
-        Entendi
-      </button>
-    </div>
-  </div>
-
-  <!-- =====================================================================
        MODAL DE CONFIRMAÇÃO PERSONALIZADO (SUBSTITUI confirm() NATIVO)
        ===================================================================== -->
-  <div id="confirm-modal"
-    class="no-print hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+  <div id="confirm-modal" class="no-print hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl space-y-4">
       <h3 id="confirm-title" class="text-base font-extrabold text-gray-900">Confirmar ação</h3>
       <p id="confirm-message" class="text-sm text-gray-600">Tem certeza que deseja continuar?</p>
       <div class="grid grid-cols-2 gap-2.5 pt-1">
-        <button id="btn-confirm-cancel" type="button"
-          class="py-2.5 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-sm">
+        <button id="btn-confirm-cancel" type="button" class="py-2.5 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-sm">
           Cancelar
         </button>
-        <button id="btn-confirm-ok" type="button"
-          class="py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm">
+        <button id="btn-confirm-ok" type="button" class="py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm">
           Confirmar
         </button>
       </div>
@@ -1106,8 +1190,7 @@
   <!-- =====================================================================
        MODAL DE COMPARTILHAMENTO DIRETO DO PDF GERADO
        ===================================================================== -->
-  <div id="pdf-share-modal"
-    class="no-print hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3">
+  <div id="pdf-share-modal" class="no-print hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3">
     <div class="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl space-y-4">
       <div class="flex items-start justify-between gap-2">
         <div>
@@ -1116,20 +1199,17 @@
             Toque no botão verde abaixo para abrir o compartilhamento do WhatsApp com o arquivo PDF anexado.
           </p>
         </div>
-        <button id="btn-close-pdf-share-modal" type="button"
-          class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 font-bold shrink-0">
+        <button id="btn-close-pdf-share-modal" type="button" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 font-bold shrink-0">
           ✕
         </button>
       </div>
 
       <div class="space-y-2.5">
-        <button id="btn-modal-share-now" type="button"
-          class="touch-btn w-full py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm shadow-sm transition flex items-center justify-center gap-2">
+        <button id="btn-modal-share-now" type="button" class="touch-btn w-full py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm shadow-sm transition flex items-center justify-center gap-2">
           <span>📲 Compartilhar PDF no WhatsApp</span>
         </button>
 
-        <button id="btn-modal-download-pdf" type="button"
-          class="touch-btn w-full py-3 px-4 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs transition flex items-center justify-center gap-2">
+        <button id="btn-modal-download-pdf" type="button" class="touch-btn w-full py-3 px-4 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs transition flex items-center justify-center gap-2">
           <span>⬇️ Baixar Arquivo PDF no Aparelho</span>
         </button>
       </div>
@@ -1140,8 +1220,7 @@
        TOAST FLUTUANTE DE FEEDBACK (SUBSTITUI alert() NATIVO)
        ===================================================================== -->
   <div id="toast-container" class="no-print fixed top-20 inset-x-0 z-50 pointer-events-none flex justify-center px-4">
-    <div id="toast-box"
-      class="hidden bg-gray-900 text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 max-w-sm">
+    <div id="toast-box" class="hidden bg-gray-900 text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 max-w-sm">
       <span id="toast-icon">✅</span>
       <span id="toast-text">Ação concluída</span>
     </div>
@@ -1155,7 +1234,76 @@
       'use strict';
 
       // ===================================================================
-      // 1. CONFIGURAÇÃO DA LOGO (GALERIA + TAMANHO + POSIÇÃO + ÍCONE PWA)
+      // 1. ARMAZENAMENTO PERSISTENTE DUPLO (INDEXEDDB + LOCALSTORAGE)
+      // ===================================================================
+      const DB_NAME = 'eletro_hauss_pwa_db_v1';
+      const DB_STORE = 'kv_store';
+
+      function openAppDB() {
+        return new Promise((resolve, reject) => {
+          if (!('indexedDB' in window)) {
+            reject(new Error('IndexedDB indisponível'));
+            return;
+          }
+          const req = indexedDB.open(DB_NAME, 1);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(DB_STORE)) {
+              db.createObjectStore(DB_STORE);
+            }
+          };
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+      }
+
+      async function idbSet(key, value) {
+        try {
+          const db = await openAppDB();
+          return await new Promise((resolve, reject) => {
+            const tx = db.transaction(DB_STORE, 'readwrite');
+            tx.objectStore(DB_STORE).put(value, key);
+            tx.oncomplete = () => resolve(true);
+            tx.onerror = () => reject(tx.error);
+          });
+        } catch (err) {
+          console.warn('Aviso IndexedDB write:', err);
+          return false;
+        }
+      }
+
+      async function idbGet(key) {
+        try {
+          const db = await openAppDB();
+          return await new Promise((resolve, reject) => {
+            const tx = db.transaction(DB_STORE, 'readonly');
+            const req = tx.objectStore(DB_STORE).get(key);
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+          });
+        } catch (err) {
+          console.warn('Aviso IndexedDB read:', err);
+          return undefined;
+        }
+      }
+
+      function persistData(key, value) {
+        // 1. Grava no IndexedDB (capacidade ampla, resistente ao fechamento do app)
+        idbSet(key, value);
+        // 2. Grava espelho no localStorage para carregamento instantâneo
+        try {
+          localStorage.setItem(key, JSON.stringify(value));
+        } catch (err) {
+          console.warn('Aviso localStorage quota (dados garantidos no IndexedDB):', err);
+        }
+      }
+
+      if (navigator.storage && navigator.storage.persist) {
+        navigator.storage.persist().catch(() => {});
+      }
+
+      // ===================================================================
+      // 2. CONFIGURAÇÃO DA LOGO (GALERIA + TAMANHO + POSIÇÃO + ÍCONE PWA)
       // ===================================================================
       const LOGO_SETTINGS_KEY = 'eletro_hauss_logo_settings_v2';
       const LEGACY_LOGO_KEY = 'eletro_hauss_custom_logo_v1';
@@ -1167,7 +1315,7 @@
         useAsAppIcon: true
       };
 
-      function loadLogoSettings() {
+      function loadLogoSettingsSync() {
         try {
           const saved = localStorage.getItem(LOGO_SETTINGS_KEY);
           if (saved) {
@@ -1176,6 +1324,7 @@
             const legacy = localStorage.getItem(LEGACY_LOGO_KEY);
             if (legacy) {
               logoSettings.dataUrl = legacy;
+              localStorage.removeItem(LEGACY_LOGO_KEY);
               saveLogoSettings();
             }
           }
@@ -1186,17 +1335,15 @@
 
       function saveLogoSettings() {
         try {
-          localStorage.setItem(LOGO_SETTINGS_KEY, JSON.stringify(logoSettings));
-        } catch (err) {
-          showToast('Imagem muito grande para salvar offline. Tente uma menor.', '⚠️');
-        }
+          localStorage.removeItem(LEGACY_LOGO_KEY);
+        } catch (e) {}
+        persistData(LOGO_SETTINGS_KEY, logoSettings);
       }
 
       function getDefaultAppIconSvg() {
         return './icon-192.png';
       }
 
-      // Gera um ícone quadrado nítido para a tela inicial do celular a partir da logo enviada
       function buildSquareAppIcon(dataUrl, callback) {
         if (!dataUrl || !logoSettings.useAsAppIcon) {
           callback(getDefaultAppIconSvg());
@@ -1211,7 +1358,6 @@
             canvas.height = size;
             const ctx = canvas.getContext('2d');
 
-            // Fundo cinza característico da Eletro Hauss caso a logo seja transparente
             ctx.fillStyle = logoSettings.position === 'below' ? '#ffffff' : '#8d9094';
             ctx.fillRect(0, 0, size, size);
 
@@ -1342,7 +1488,6 @@
         const reader = new FileReader();
         reader.onload = function (event) {
           const rawResult = event.target.result;
-          // Se for SVG, salva diretamente em Base64 mantendo nitidez vetorial infinita
           if (file.type === 'image/svg+xml') {
             logoSettings.dataUrl = rawResult;
             saveLogoSettings();
@@ -1354,7 +1499,8 @@
           const img = new Image();
           img.onload = function () {
             try {
-              const maxDim = 900;
+              // 480px garante nitidez retina 3x na folha A4 (altura max 160px) mantendo arquivo leve para salvar
+              const maxDim = 480;
               let w = img.width;
               let h = img.height;
               if (w > maxDim || h > maxDim) {
@@ -1373,7 +1519,6 @@
               ctx.clearRect(0, 0, w, h);
               ctx.drawImage(img, 0, 0, w, h);
 
-              // Exporta sempre em PNG para preservar transparência (canal alfa)
               logoSettings.dataUrl = canvas.toDataURL('image/png');
               saveLogoSettings();
               applyLogoAcrossApp();
@@ -1405,29 +1550,13 @@
         }
       }
 
-      let deferredInstallPrompt = null;
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredInstallPrompt = e;
-        document.getElementById('pwa-smart-banner').classList.remove('hidden');
-        document.getElementById('native-install-box').classList.remove('hidden');
-      });
-
-      window.addEventListener('appinstalled', () => {
-        deferredInstallPrompt = null;
-        document.getElementById('pwa-smart-banner').classList.add('hidden');
-        document.getElementById('install-modal').classList.add('hidden');
-        showToast('Aplicativo Eletro Hauss instalado com sucesso!', '⚡');
-      });
-
       // ===================================================================
-      // 2. ESTADO DO APLICATIVO E CHAVES DE ARMAZENAMENTO LOCAL
+      // 2B. ESTADO DO APLICATIVO E CHAVES DE ARMAZENAMENTO LOCAL
       // ===================================================================
       const STORAGE_KEYS = {
         DRAFT: 'eletro_hauss_draft_v2',
         SAVED: 'eletro_hauss_saved_quotes_v1',
-        CATALOG: 'eletro_hauss_catalog_v2',
-        COUNTER: 'eletro_hauss_quote_counter_v1'
+        CATALOG: 'eletro_hauss_catalog_v2'
       };
 
       const DEFAULT_CATALOG = [
@@ -1448,7 +1577,7 @@
       }
 
       let state = {
-        quoteNumber: 1,
+        activeSavedId: null,
         useQuantity: true,
         hideEmptyFields: true,
         client: {
@@ -1572,8 +1701,18 @@
       }
 
       // ===================================================================
-      // 5. PERSISTÊNCIA LOCAL (LOCALSTORAGE)
+      // 5. PERSISTÊNCIA LOCAL (INDEXEDDB + LOCALSTORAGE)
       // ===================================================================
+      function applyDraftObject(parsed) {
+        if (!parsed || typeof parsed !== 'object') return;
+        state.activeSavedId = parsed.activeSavedId || null;
+        state.client = { ...state.client, ...(parsed.client || {}) };
+        state.items = Array.isArray(parsed.items) ? parsed.items : [];
+        state.notes = parsed.notes || '';
+        if (typeof parsed.useQuantity === 'boolean') state.useQuantity = parsed.useQuantity;
+        if (typeof parsed.hideEmptyFields === 'boolean') state.hideEmptyFields = parsed.hideEmptyFields;
+      }
+
       function loadFromStorage() {
         try {
           const savedCatalog = localStorage.getItem(STORAGE_KEYS.CATALOG);
@@ -1582,18 +1721,9 @@
           const savedList = localStorage.getItem(STORAGE_KEYS.SAVED);
           savedQuotes = savedList ? JSON.parse(savedList) : [];
 
-          const counter = localStorage.getItem(STORAGE_KEYS.COUNTER);
-          state.quoteNumber = counter ? parseInt(counter, 10) : 1;
-
           const draft = localStorage.getItem(STORAGE_KEYS.DRAFT);
           if (draft) {
-            const parsed = JSON.parse(draft);
-            state.client = { ...state.client, ...(parsed.client || {}) };
-            state.items = Array.isArray(parsed.items) ? parsed.items : [];
-            state.notes = parsed.notes || '';
-            if (typeof parsed.useQuantity === 'boolean') state.useQuantity = parsed.useQuantity;
-            if (typeof parsed.hideEmptyFields === 'boolean') state.hideEmptyFields = parsed.hideEmptyFields;
-            if (parsed.quoteNumber) state.quoteNumber = parsed.quoteNumber;
+            applyDraftObject(JSON.parse(draft));
           }
         } catch (e) {
           console.error('Erro ao ler dados locais:', e);
@@ -1602,27 +1732,67 @@
       }
 
       function saveDraft() {
-        try {
-          localStorage.setItem(STORAGE_KEYS.DRAFT, JSON.stringify({
-            quoteNumber: state.quoteNumber,
-            useQuantity: state.useQuantity,
-            hideEmptyFields: state.hideEmptyFields,
-            client: state.client,
-            items: state.items,
-            notes: state.notes
-          }));
-          document.getElementById('draft-status').textContent = '✓ Salvo automático';
-        } catch (e) {
-          console.error('Erro ao salvar rascunho:', e);
-        }
+        const payload = {
+          activeSavedId: state.activeSavedId,
+          useQuantity: state.useQuantity,
+          hideEmptyFields: state.hideEmptyFields,
+          client: state.client,
+          items: state.items,
+          notes: state.notes
+        };
+        persistData(STORAGE_KEYS.DRAFT, payload);
+        const statusEl = document.getElementById('draft-status');
+        if (statusEl) statusEl.textContent = '✓ Salvo automático';
       }
 
       function saveCatalogStorage() {
-        localStorage.setItem(STORAGE_KEYS.CATALOG, JSON.stringify(catalog));
+        persistData(STORAGE_KEYS.CATALOG, catalog);
       }
 
       function saveHistoryStorage() {
-        localStorage.setItem(STORAGE_KEYS.SAVED, JSON.stringify(savedQuotes));
+        persistData(STORAGE_KEYS.SAVED, savedQuotes);
+      }
+
+      async function hydrateFromIndexedDB() {
+        let changed = false;
+
+        const idbLogo = await idbGet(LOGO_SETTINGS_KEY);
+        if (idbLogo && idbLogo.dataUrl && !logoSettings.dataUrl) {
+          logoSettings = { ...logoSettings, ...idbLogo };
+          changed = true;
+        } else if (logoSettings.dataUrl) {
+          idbSet(LOGO_SETTINGS_KEY, logoSettings);
+        }
+
+        const idbSaved = await idbGet(STORAGE_KEYS.SAVED);
+        if (Array.isArray(idbSaved) && idbSaved.length > savedQuotes.length) {
+          savedQuotes = idbSaved;
+          changed = true;
+        } else if (savedQuotes.length > 0) {
+          idbSet(STORAGE_KEYS.SAVED, savedQuotes);
+        }
+
+        const idbCatalog = await idbGet(STORAGE_KEYS.CATALOG);
+        if (Array.isArray(idbCatalog) && idbCatalog.length > 0 && !localStorage.getItem(STORAGE_KEYS.CATALOG)) {
+          catalog = idbCatalog;
+          changed = true;
+        } else {
+          idbSet(STORAGE_KEYS.CATALOG, catalog);
+        }
+
+        const idbDraft = await idbGet(STORAGE_KEYS.DRAFT);
+        if (idbDraft && !localStorage.getItem(STORAGE_KEYS.DRAFT)) {
+          applyDraftObject(idbDraft);
+          changed = true;
+        } else {
+          saveDraft();
+        }
+
+        if (changed) {
+          applyLogoAcrossApp();
+          syncInputsFromState();
+          renderAll();
+        }
       }
 
       // ===================================================================
@@ -1853,9 +2023,6 @@
       }
 
       function renderDocumentPreview(total, formattedTotal) {
-        const numStr = String(state.quoteNumber || 1).padStart(3, '0');
-        document.getElementById('doc-number-display').textContent = `Nº ${numStr}`;
-
         const fieldsMap = [
           { rowId: 'doc-row-cliente', valId: 'doc-cliente', value: state.client.name.trim(), alwaysShow: false },
           { rowId: 'doc-row-cpfcnpj', valId: 'doc-cpfcnpj', value: state.client.cpfCnpj.trim(), alwaysShow: false },
@@ -1946,9 +2113,13 @@
       // 7. HISTÓRICO DE ORÇAMENTOS E GERENCIADOR DE ATALHOS (ABA SALVOS)
       // ===================================================================
       function saveCurrentQuoteToHistory() {
+        const existingIdx = state.activeSavedId
+          ? savedQuotes.findIndex((q) => q.id === state.activeSavedId)
+          : -1;
+
+        const quoteId = existingIdx >= 0 ? state.activeSavedId : ('quote_' + Date.now());
         const snapshot = {
-          id: 'quote_' + Date.now(),
-          quoteNumber: state.quoteNumber,
+          id: quoteId,
           useQuantity: state.useQuantity,
           hideEmptyFields: state.hideEmptyFields,
           client: { ...state.client },
@@ -1957,10 +2128,17 @@
           total: calculateTotal(),
           savedAt: new Date().toISOString()
         };
+
+        if (existingIdx >= 0) {
+          savedQuotes.splice(existingIdx, 1);
+        }
         savedQuotes.unshift(snapshot);
+        state.activeSavedId = quoteId;
+
+        saveDraft();
         saveHistoryStorage();
         renderSavedQuotes();
-        showToast('Orçamento salvo no histórico!', '💾');
+        showToast('Orçamento salvo com sucesso!', '💾');
       }
 
       function renderSavedQuotes() {
@@ -1986,7 +2164,6 @@
         }
 
         listEl.innerHTML = filtered.map((q) => {
-          const numStr = String(q.quoteNumber || 1).padStart(3, '0');
           const clientName = q.client && q.client.name ? q.client.name : 'Cliente sem nome';
           const dateStr = q.client && q.client.date ? formatDateBR(q.client.date) : '—';
           return `
@@ -1994,7 +2171,7 @@
               <div class="flex items-start justify-between gap-2">
                 <div class="min-w-0">
                   <span class="inline-block text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-gray-100 text-gray-600">
-                    Orçamento Nº ${numStr} • ${dateStr}
+                    Data: ${dateStr}
                   </span>
                   <h4 class="text-sm font-extrabold text-gray-900 mt-1 truncate">${escapeHtml(clientName)}</h4>
                   <p class="text-xs text-gray-500">${(q.items || []).length} item(ns)</p>
@@ -2021,7 +2198,7 @@
           btn.addEventListener('click', () => {
             const found = savedQuotes.find((q) => q.id === btn.dataset.loadQuote);
             if (!found) return;
-            state.quoteNumber = found.quoteNumber || 1;
+            state.activeSavedId = found.id;
             state.useQuantity = typeof found.useQuantity === 'boolean' ? found.useQuantity : true;
             state.hideEmptyFields = typeof found.hideEmptyFields === 'boolean' ? found.hideEmptyFields : true;
             state.client = { ...found.client };
@@ -2040,7 +2217,7 @@
           btn.addEventListener('click', () => {
             const found = savedQuotes.find((q) => q.id === btn.dataset.dupQuote);
             if (!found) return;
-            state.quoteNumber = getNextQuoteNumber();
+            state.activeSavedId = null;
             state.useQuantity = typeof found.useQuantity === 'boolean' ? found.useQuantity : true;
             state.client = { ...found.client, date: getTodayISO() };
             state.items = JSON.parse(JSON.stringify(found.items || []));
@@ -2050,7 +2227,7 @@
             saveDraft();
             renderAll();
             switchTab('editor');
-            showToast('Cópia criada com novo número!', '📑');
+            showToast('Cópia do orçamento criada!', '📑');
           });
         });
 
@@ -2287,12 +2464,11 @@
       // ===================================================================
       function buildPlainTextQuote() {
         const total = formatCurrency(calculateTotal());
-        const numStr = String(state.quoteNumber || 1).padStart(3, '0');
         const lines = [
           `*ELETRO HAUSS - Instalações Elétricas*`,
           `📞 (48) 98852-1076`,
           `--------------------------------`,
-          `*ORÇAMENTO Nº ${numStr}*`,
+          `*ORÇAMENTO*`,
           `📅 Data: ${formatDateBR(state.client.date)}`
         ];
 
@@ -2338,17 +2514,16 @@
       }
 
       function buildPdfFileName() {
-        const numStr = String(state.quoteNumber || 1).padStart(3, '0');
         const rawName = (state.client.name || '').trim();
-        if (!rawName) return `Orcamento-Eletro-Hauss-${numStr}.pdf`;
+        if (!rawName) return `Orcamento-Eletro-Hauss.pdf`;
         const cleanName = rawName
           .normalize('NFD')
           .replace(/[\u0300-\u036f]/g, '')
           .replace(/[^a-zA-Z0-9\s-]/g, '')
           .trim()
           .replace(/\s+/g, '-')
-          .slice(0, 32);
-        return `Orcamento-${numStr}-${cleanName || 'Cliente'}.pdf`;
+          .slice(0, 36);
+        return `Orcamento-${cleanName || 'Eletro-Hauss'}.pdf`;
       }
 
       function downloadBlobFile(blob, fileName) {
@@ -2685,7 +2860,6 @@
         const backupData = {
           app: 'Eletro Hauss Orçamentos',
           exportedAt: new Date().toISOString(),
-          quoteNumber: state.quoteNumber,
           savedQuotes,
           catalog,
           logoSettings
@@ -2716,10 +2890,6 @@
             if (Array.isArray(parsed.catalog)) {
               catalog = parsed.catalog;
               saveCatalogStorage();
-            }
-            if (parsed.quoteNumber) {
-              state.quoteNumber = parsed.quoteNumber;
-              localStorage.setItem(STORAGE_KEYS.COUNTER, String(state.quoteNumber));
             }
             if (parsed.logoSettings) {
               logoSettings = { ...logoSettings, ...parsed.logoSettings };
@@ -2811,20 +2981,13 @@
       document.getElementById('item-price').addEventListener('input', (e) => applyCurrencyMask(e.target));
       document.getElementById('cat-new-price').addEventListener('input', (e) => applyCurrencyMask(e.target));
 
-      function getNextQuoteNumber() {
-        const current = parseInt(localStorage.getItem(STORAGE_KEYS.COUNTER) || '1', 10);
-        const next = current + 1;
-        localStorage.setItem(STORAGE_KEYS.COUNTER, String(next));
-        return next;
-      }
-
       document.getElementById('btn-new-blank').addEventListener('click', () => {
         showConfirmModal(
           'Começar novo orçamento?',
           'Os dados atuais serão limpos para você iniciar um novo orçamento em branco.',
           () => {
             state = {
-              quoteNumber: getNextQuoteNumber(),
+              activeSavedId: null,
               useQuantity: state.useQuantity,
               hideEmptyFields: state.hideEmptyFields,
               client: {
@@ -2849,34 +3012,21 @@
         );
       });
 
-      const installModal = document.getElementById('install-modal');
-      document.getElementById('btn-open-install').addEventListener('click', () => {
-        installModal.classList.remove('hidden');
-      });
-      document.getElementById('btn-close-install-modal').addEventListener('click', () => {
-        installModal.classList.add('hidden');
-      });
-      document.getElementById('btn-ok-install-modal').addEventListener('click', () => {
-        installModal.classList.add('hidden');
-      });
-      document.getElementById('btn-banner-close').addEventListener('click', () => {
-        document.getElementById('pwa-smart-banner').classList.add('hidden');
-      });
-
-      async function triggerNativeInstall() {
-        if (!deferredInstallPrompt) {
-          installModal.classList.remove('hidden');
-          return;
-        }
-        deferredInstallPrompt.prompt();
-        const choice = await deferredInstallPrompt.userChoice;
-        if (choice.outcome === 'accepted') {
-          deferredInstallPrompt = null;
-        }
+      // Garante gravação imediata ao minimizar, alternar aba ou fechar o app no celular
+      function flushAllPersistentData() {
+        saveDraft();
+        saveLogoSettings();
+        saveHistoryStorage();
+        saveCatalogStorage();
       }
 
-      document.getElementById('btn-banner-install').addEventListener('click', triggerNativeInstall);
-      document.getElementById('btn-trigger-native-install').addEventListener('click', triggerNativeInstall);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          flushAllPersistentData();
+        }
+      });
+
+      window.addEventListener('pagehide', flushAllPersistentData);
 
       // ===================================================================
       // 11. INICIALIZAÇÃO DO SISTEMA E OBSERVADOR DE TELA (REALME 12 5G)
@@ -2888,13 +3038,13 @@
         if (previewContainer) ro.observe(previewContainer);
       }
 
-      loadLogoSettings();
+      loadLogoSettingsSync();
       applyLogoAcrossApp();
       loadFromStorage();
       syncInputsFromState();
       renderAll();
+      hydrateFromIndexedDB();
     })();
   </script>
 </body>
-
 </html>

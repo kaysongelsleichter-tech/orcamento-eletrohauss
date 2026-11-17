@@ -1,4 +1,4 @@
-const CACHE_NAME = 'eletro-hauss-pwa-v1';
+const CACHE_NAME = 'eletro-hauss-pwa-v2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -40,15 +40,24 @@ self.addEventListener('fetch', (event) => {
       fetch(event.request)
         .then((response) => {
           const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put('./index.html', copy));
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, copy.clone());
+            cache.put('./index.html', copy);
+          });
           return response;
         })
-        .catch(() => caches.match('./index.html'))
+        .catch(async () => {
+          return (
+            (await caches.match(event.request, { ignoreSearch: true })) ||
+            (await caches.match('./index.html')) ||
+            (await caches.match('./'))
+          );
+        })
     );
     return;
   }
 
-  // Arquivos locais e CDNs (Tailwind, html2pdf, Google Fonts): cache + atualização em segundo plano
+  // Arquivos locais e CDNs: cache + atualização em segundo plano
   if (
     url.origin === self.location.origin ||
     url.hostname.includes('cdn.tailwindcss.com') ||
